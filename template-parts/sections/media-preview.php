@@ -22,79 +22,150 @@ $news_query = new WP_Query( array(
 
         <div class="media-news-layout">
 
-            <!-- Left: Media Preview -->
-            <div class="media-preview-col scroll-reveal" aria-label="<?php esc_attr_e( 'Latest Media', 'emc-theme' ); ?>">
+            <!-- Left: Media Preview — YouTube Videos -->
+            <div class="media-preview-col scroll-reveal" aria-label="<?php esc_attr_e( 'Latest Videos', 'emc-theme' ); ?>">
                 <div class="media-preview-label">
-                    <i class="fas fa-photo-video" aria-hidden="true"></i>
-                    <?php esc_html_e( 'Latest Media', 'emc-theme' ); ?>
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                    <?php esc_html_e( 'Latest Videos', 'emc-theme' ); ?>
                 </div>
-                <div class="media-preview-featured">
-                    <div class="media-preview-thumb">
-                        <img
-                            src="<?php echo esc_url( EMC_ASSETS . '/gallery/Eid Celebration/eid_3-600x600.jpeg' ); ?>"
-                            alt="<?php esc_attr_e( 'Community event', 'emc-theme' ); ?>"
-                            loading="lazy"
-                        >
-                        <div class="media-play-overlay" aria-hidden="true">
-                            <div class="play-btn"><i class="fas fa-play"></i></div>
+
+                <?php
+                // Three EMC YouTube videos
+                $emc_videos = array(
+                    array(
+                        'id'    => 'DkNOV8f2_Dk',
+                        'title' => __( 'The Importance of Community Ties in Islam', 'emc-theme' ),
+                        'date'  => '10 May 2026',
+                    ),
+                    array(
+                        'id'    => 'pUMETJipeqk',
+                        'title' => __( 'EMC Community Events & Activities', 'emc-theme' ),
+                        'date'  => '02 Apr 2026',
+                    ),
+                    array(
+                        'id'    => 'lCEIDLfIVeY',
+                        'title' => __( 'EMC — Faith, Community & Welfare', 'emc-theme' ),
+                        'date'  => '15 Mar 2026',
+                    ),
+                );
+                $featured = $emc_videos[0];
+                ?>
+
+                <!-- Featured Video -->
+                <button
+                    class="media-preview-thumb yt-play-btn"
+                    data-video-id="<?php echo esc_attr( $featured['id'] ); ?>"
+                    aria-label="<?php printf( esc_attr__( 'Play video: %s', 'emc-theme' ), esc_attr( $featured['title'] ) ); ?>"
+                    style="all:unset;display:block;width:100%;cursor:pointer;border-radius:inherit;"
+                >
+                    <img
+                        src="https://img.youtube.com/vi/<?php echo esc_attr( $featured['id'] ); ?>/maxresdefault.jpg"
+                        alt="<?php echo esc_attr( $featured['title'] ); ?>"
+                        loading="lazy"
+                        onerror="this.src='https://img.youtube.com/vi/<?php echo esc_attr( $featured['id'] ); ?>/hqdefault.jpg'"
+                        style="width:100%;height:100%;object-fit:cover;display:block;"
+                    >
+                    <div class="media-play-overlay" aria-hidden="true">
+                        <div class="play-btn yt-pulse"><i class="fab fa-youtube"></i></div>
+                    </div>
+                </button>
+
+                <div class="media-preview-info">
+                    <span class="media-preview-badge video">
+                        <i class="fab fa-youtube" aria-hidden="true"></i>
+                        <?php esc_html_e( 'YouTube', 'emc-theme' ); ?>
+                    </span>
+                    <h3><?php echo esc_html( $featured['title'] ); ?></h3>
+                    <span class="media-preview-date"><?php echo esc_html( $featured['date'] ); ?></span>
+                </div>
+
+                <!-- Mini Video Cards — all 3 videos -->
+                <div class="media-preview-grid">
+                    <?php foreach ( $emc_videos as $vid ) : ?>
+                    <button
+                        class="media-mini-card yt-play-btn"
+                        data-video-id="<?php echo esc_attr( $vid['id'] ); ?>"
+                        aria-label="<?php printf( esc_attr__( 'Play: %s', 'emc-theme' ), esc_attr( $vid['title'] ) ); ?>"
+                        style="all:unset;display:flex;flex-direction:column;gap:0;cursor:pointer;width:100%;"
+                    >
+                        <div class="media-mini-thumb" style="position:relative;overflow:hidden;">
+                            <img
+                                src="https://img.youtube.com/vi/<?php echo esc_attr( $vid['id'] ); ?>/mqdefault.jpg"
+                                alt="<?php echo esc_attr( $vid['title'] ); ?>"
+                                loading="lazy"
+                                onerror="this.src='https://img.youtube.com/vi/<?php echo esc_attr( $vid['id'] ); ?>/default.jpg'"
+                                style="width:100%;height:100%;object-fit:cover;display:block;"
+                            >
+                            <div class="mini-play-icon" aria-hidden="true"><i class="fab fa-youtube"></i></div>
                         </div>
-                    </div>
-                    <div class="media-preview-info">
-                        <span class="media-preview-badge video">
-                            <i class="fas fa-video" aria-hidden="true"></i>
-                            <?php esc_html_e( 'Video', 'emc-theme' ); ?>
-                        </span>
-                        <h3><?php esc_html_e( 'The Importance of Community Ties in Islam', 'emc-theme' ); ?></h3>
-                        <span class="media-preview-date">10 May 2026 &bull; 45 min</span>
-                    </div>
+                        <span><?php echo esc_html( $vid['title'] ); ?></span>
+                    </button>
+                    <?php endforeach; ?>
                 </div>
 
-                <div class="media-preview-grid" aria-hidden="true">
-                    <?php
-                    // Dynamic mini-cards from emc_gallery CPT
-                    $mini_gallery = new WP_Query( array(
-                        'post_type'      => 'emc_gallery',
-                        'posts_per_page' => 3,
-                        'post_status'    => 'publish',
-                        'orderby'        => 'rand',
-                    ) );
-
-                    if ( $mini_gallery->have_posts() ) :
-                        while ( $mini_gallery->have_posts() ) :
-                            $mini_gallery->the_post();
-                            $mini_thumb = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
-                            if ( ! $mini_thumb ) continue;
-                    ?>
-                    <div class="media-mini-card">
-                        <div class="media-mini-thumb" style="background-image:url('<?php echo esc_url( $mini_thumb ); ?>');background-size:cover;background-position:center;"></div>
-                        <span><?php the_title(); ?></span>
-                    </div>
-                    <?php
-                        endwhile;
-                        wp_reset_postdata();
-                    else :
-                    ?>
-                    <!-- Static fallback -->
-                    <div class="media-mini-card">
-                        <div class="media-mini-thumb" style="background-image:url('<?php echo esc_url( EMC_ASSETS . '/gallery/Activity During Ramadan/r2-300x300.jpeg' ); ?>');background-size:cover;background-position:center;"></div>
-                        <span><?php esc_html_e( 'Activity During Ramadan', 'emc-theme' ); ?></span>
-                    </div>
-                    <div class="media-mini-card">
-                        <div class="media-mini-thumb" style="background-image:url('<?php echo esc_url( EMC_ASSETS . '/gallery/Friday Prayer/FPS-600x600.jpeg' ); ?>');background-size:cover;background-position:center;"></div>
-                        <span><?php esc_html_e( 'Friday Prayer', 'emc-theme' ); ?></span>
-                    </div>
-                    <div class="media-mini-card">
-                        <div class="media-mini-thumb" style="background-image:url('<?php echo esc_url( EMC_ASSETS . '/gallery/Outdoor Activity 2024/out_1-1-300x300.jpeg' ); ?>');background-size:cover;background-position:center;"></div>
-                        <span><?php esc_html_e( 'Outdoor Activity 2024', 'emc-theme' ); ?></span>
-                    </div>
-                    <?php endif; ?>
-                </div>
-
-                <a href="<?php echo esc_url( $media_url ); ?>" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:1.5rem;">
-                    <i class="fas fa-images" aria-hidden="true"></i>
-                    <?php esc_html_e( 'View Full Gallery', 'emc-theme' ); ?>
+                <a href="https://www.youtube.com/@essexmuslimcentre" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:1.5rem;">
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                    <?php esc_html_e( 'Visit Our YouTube Channel', 'emc-theme' ); ?>
                 </a>
             </div>
+
+            <!-- YouTube Lightbox Modal -->
+            <div id="yt-modal" class="yt-modal" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Video player', 'emc-theme' ); ?>" style="display:none;">
+                <div class="yt-modal-backdrop"></div>
+                <div class="yt-modal-inner">
+                    <button class="yt-modal-close" aria-label="<?php esc_attr_e( 'Close video', 'emc-theme' ); ?>">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                    <div class="yt-modal-embed">
+                        <iframe
+                            id="yt-iframe"
+                            src=""
+                            title="<?php esc_attr_e( 'YouTube video', 'emc-theme' ); ?>"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            loading="lazy"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            ( function() {
+                var modal   = document.getElementById('yt-modal');
+                var iframe  = document.getElementById('yt-iframe');
+                var closeBtn = document.querySelector('.yt-modal-close');
+                var backdrop = document.querySelector('.yt-modal-backdrop');
+                if ( ! modal ) return;
+
+                function openVideo( videoId ) {
+                    iframe.src = 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1&rel=0';
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    closeBtn.focus();
+                }
+
+                function closeVideo() {
+                    modal.style.display = 'none';
+                    iframe.src = '';
+                    document.body.style.overflow = '';
+                }
+
+                document.querySelectorAll('.yt-play-btn').forEach( function( btn ) {
+                    btn.addEventListener('click', function() {
+                        openVideo( this.dataset.videoId );
+                    });
+                });
+
+                if ( closeBtn ) closeBtn.addEventListener('click', closeVideo);
+                if ( backdrop ) backdrop.addEventListener('click', closeVideo);
+
+                document.addEventListener('keydown', function(e) {
+                    if ( e.key === 'Escape' && modal.style.display !== 'none' ) closeVideo();
+                });
+            } )();
+            </script>
+
 
             <!-- Right: News -->
             <div class="news-preview-col">
