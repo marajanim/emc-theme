@@ -12,6 +12,26 @@ $news_query = new WP_Query( array(
     'posts_per_page' => 3,
     'post_status'    => 'publish',
 ) );
+
+// Three EMC YouTube videos
+$emc_videos = array(
+    array(
+        'id'    => 'DkNOV8f2_Dk',
+        'title' => 'The Importance of Community Ties in Islam',
+        'date'  => '10 May 2026',
+    ),
+    array(
+        'id'    => 'pUMETJipeqk',
+        'title' => 'EMC Community Events & Activities',
+        'date'  => '02 Apr 2026',
+    ),
+    array(
+        'id'    => 'lCEIDLfIVeY',
+        'title' => 'EMC — Faith, Community & Welfare',
+        'date'  => '15 Mar 2026',
+    ),
+);
+$featured = $emc_videos[0];
 ?>
 <section class="homepage-media section-padding" id="media-news" style="background:var(--white);" aria-labelledby="media-heading">
     <div class="container">
@@ -22,150 +42,72 @@ $news_query = new WP_Query( array(
 
         <div class="media-news-layout">
 
-            <!-- Left: Media Preview — YouTube Videos -->
+            <!-- Left: YouTube Videos -->
             <div class="media-preview-col scroll-reveal" aria-label="<?php esc_attr_e( 'Latest Videos', 'emc-theme' ); ?>">
                 <div class="media-preview-label">
                     <i class="fab fa-youtube" aria-hidden="true"></i>
                     <?php esc_html_e( 'Latest Videos', 'emc-theme' ); ?>
                 </div>
 
-                <?php
-                // Three EMC YouTube videos
-                $emc_videos = array(
-                    array(
-                        'id'    => 'DkNOV8f2_Dk',
-                        'title' => __( 'The Importance of Community Ties in Islam', 'emc-theme' ),
-                        'date'  => '10 May 2026',
-                    ),
-                    array(
-                        'id'    => 'pUMETJipeqk',
-                        'title' => __( 'EMC Community Events & Activities', 'emc-theme' ),
-                        'date'  => '02 Apr 2026',
-                    ),
-                    array(
-                        'id'    => 'lCEIDLfIVeY',
-                        'title' => __( 'EMC — Faith, Community & Welfare', 'emc-theme' ),
-                        'date'  => '15 Mar 2026',
-                    ),
-                );
-                $featured = $emc_videos[0];
-                ?>
-
-                <!-- Featured Video -->
-                <button
-                    class="media-preview-thumb yt-play-btn"
-                    data-video-id="<?php echo esc_attr( $featured['id'] ); ?>"
-                    aria-label="<?php printf( esc_attr__( 'Play video: %s', 'emc-theme' ), esc_attr( $featured['title'] ) ); ?>"
-                    style="all:unset;display:block;width:100%;cursor:pointer;border-radius:inherit;"
-                >
-                    <img
-                        src="https://img.youtube.com/vi/<?php echo esc_attr( $featured['id'] ); ?>/maxresdefault.jpg"
-                        alt="<?php echo esc_attr( $featured['title'] ); ?>"
-                        loading="lazy"
-                        onerror="this.src='https://img.youtube.com/vi/<?php echo esc_attr( $featured['id'] ); ?>/hqdefault.jpg'"
-                        style="width:100%;height:100%;object-fit:cover;display:block;"
+                <!-- Featured Video — uses existing .media-preview-featured styles -->
+                <div class="media-preview-featured">
+                    <button
+                        class="media-preview-thumb yt-play-btn"
+                        data-video-id="<?php echo esc_attr( $featured['id'] ); ?>"
+                        aria-label="<?php printf( esc_attr__( 'Play: %s', 'emc-theme' ), esc_attr( $featured['title'] ) ); ?>"
+                        style="all:unset;display:block;width:100%;position:relative;height:220px;overflow:hidden;cursor:pointer;"
                     >
-                    <div class="media-play-overlay" aria-hidden="true">
-                        <div class="play-btn yt-pulse"><i class="fab fa-youtube"></i></div>
+                        <img
+                            src="https://img.youtube.com/vi/<?php echo esc_attr( $featured['id'] ); ?>/hqdefault.jpg"
+                            alt="<?php echo esc_attr( $featured['title'] ); ?>"
+                            loading="lazy"
+                            style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;"
+                            onerror="this.src='https://img.youtube.com/vi/<?php echo esc_attr( $featured['id'] ); ?>/sddefault.jpg'"
+                        >
+                        <div class="media-play-overlay" aria-hidden="true">
+                            <div class="play-btn yt-pulse"><i class="fab fa-youtube"></i></div>
+                        </div>
+                    </button>
+                    <div class="media-preview-info">
+                        <span class="media-preview-badge video">
+                            <i class="fab fa-youtube" aria-hidden="true"></i>
+                            <?php esc_html_e( 'YouTube', 'emc-theme' ); ?>
+                        </span>
+                        <h3><?php echo esc_html( $featured['title'] ); ?></h3>
+                        <span class="media-preview-date"><?php echo esc_html( $featured['date'] ); ?></span>
                     </div>
-                </button>
-
-                <div class="media-preview-info">
-                    <span class="media-preview-badge video">
-                        <i class="fab fa-youtube" aria-hidden="true"></i>
-                        <?php esc_html_e( 'YouTube', 'emc-theme' ); ?>
-                    </span>
-                    <h3><?php echo esc_html( $featured['title'] ); ?></h3>
-                    <span class="media-preview-date"><?php echo esc_html( $featured['date'] ); ?></span>
                 </div>
 
-                <!-- Mini Video Cards — all 3 videos -->
+                <!-- Mini Video Cards — all 3 -->
                 <div class="media-preview-grid">
                     <?php foreach ( $emc_videos as $vid ) : ?>
                     <button
                         class="media-mini-card yt-play-btn"
                         data-video-id="<?php echo esc_attr( $vid['id'] ); ?>"
                         aria-label="<?php printf( esc_attr__( 'Play: %s', 'emc-theme' ), esc_attr( $vid['title'] ) ); ?>"
-                        style="all:unset;display:flex;flex-direction:column;gap:0;cursor:pointer;width:100%;"
+                        style="all:unset;display:flex;flex-direction:column;cursor:pointer;border-radius:12px;overflow:hidden;border:1px solid var(--border-color);transition:transform .2s;width:100%;background:var(--white);"
                     >
-                        <div class="media-mini-thumb" style="position:relative;overflow:hidden;">
+                        <div class="media-mini-thumb" style="position:relative;overflow:hidden;height:80px;flex-shrink:0;">
                             <img
                                 src="https://img.youtube.com/vi/<?php echo esc_attr( $vid['id'] ); ?>/mqdefault.jpg"
                                 alt="<?php echo esc_attr( $vid['title'] ); ?>"
                                 loading="lazy"
+                                style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s;"
                                 onerror="this.src='https://img.youtube.com/vi/<?php echo esc_attr( $vid['id'] ); ?>/default.jpg'"
-                                style="width:100%;height:100%;object-fit:cover;display:block;"
                             >
                             <div class="mini-play-icon" aria-hidden="true"><i class="fab fa-youtube"></i></div>
                         </div>
-                        <span><?php echo esc_html( $vid['title'] ); ?></span>
+                        <span style="display:block;padding:.5rem .6rem;font-size:calc(var(--step--2) - .1rem);color:var(--text-muted);line-height:1.3;"><?php echo esc_html( $vid['title'] ); ?></span>
                     </button>
                     <?php endforeach; ?>
                 </div>
 
-                <a href="https://www.youtube.com/@essexmuslimcentre" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:1.5rem;">
+                <a href="https://www.youtube.com/@essexmuslimcentre" target="_blank" rel="noopener noreferrer"
+                   class="btn btn-outline" style="width:100%;justify-content:center;margin-top:1.5rem;">
                     <i class="fab fa-youtube" aria-hidden="true"></i>
                     <?php esc_html_e( 'Visit Our YouTube Channel', 'emc-theme' ); ?>
                 </a>
             </div>
-
-            <!-- YouTube Lightbox Modal -->
-            <div id="yt-modal" class="yt-modal" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Video player', 'emc-theme' ); ?>" style="display:none;">
-                <div class="yt-modal-backdrop"></div>
-                <div class="yt-modal-inner">
-                    <button class="yt-modal-close" aria-label="<?php esc_attr_e( 'Close video', 'emc-theme' ); ?>">
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </button>
-                    <div class="yt-modal-embed">
-                        <iframe
-                            id="yt-iframe"
-                            src=""
-                            title="<?php esc_attr_e( 'YouTube video', 'emc-theme' ); ?>"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen
-                            loading="lazy"
-                        ></iframe>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-            ( function() {
-                var modal   = document.getElementById('yt-modal');
-                var iframe  = document.getElementById('yt-iframe');
-                var closeBtn = document.querySelector('.yt-modal-close');
-                var backdrop = document.querySelector('.yt-modal-backdrop');
-                if ( ! modal ) return;
-
-                function openVideo( videoId ) {
-                    iframe.src = 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1&rel=0';
-                    modal.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                    closeBtn.focus();
-                }
-
-                function closeVideo() {
-                    modal.style.display = 'none';
-                    iframe.src = '';
-                    document.body.style.overflow = '';
-                }
-
-                document.querySelectorAll('.yt-play-btn').forEach( function( btn ) {
-                    btn.addEventListener('click', function() {
-                        openVideo( this.dataset.videoId );
-                    });
-                });
-
-                if ( closeBtn ) closeBtn.addEventListener('click', closeVideo);
-                if ( backdrop ) backdrop.addEventListener('click', closeVideo);
-
-                document.addEventListener('keydown', function(e) {
-                    if ( e.key === 'Escape' && modal.style.display !== 'none' ) closeVideo();
-                });
-            } )();
-            </script>
-
 
             <!-- Right: News -->
             <div class="news-preview-col">
@@ -271,3 +213,53 @@ $news_query = new WP_Query( array(
         </div>
     </div>
 </section>
+
+<!-- YouTube Lightbox Modal (outside grid, at bottom of section) -->
+<div id="yt-modal" class="yt-modal" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Video player', 'emc-theme' ); ?>" style="display:none;">
+    <div class="yt-modal-backdrop"></div>
+    <div class="yt-modal-inner">
+        <button class="yt-modal-close" aria-label="<?php esc_attr_e( 'Close video', 'emc-theme' ); ?>">
+            <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+        <div class="yt-modal-embed">
+            <iframe
+                id="yt-iframe"
+                src=""
+                title="<?php esc_attr_e( 'YouTube video player', 'emc-theme' ); ?>"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+            ></iframe>
+        </div>
+    </div>
+</div>
+<script>
+( function() {
+    var modal    = document.getElementById('yt-modal');
+    var iframe   = document.getElementById('yt-iframe');
+    var closeBtn = document.querySelector('.yt-modal-close');
+    var backdrop = document.querySelector('.yt-modal-backdrop');
+    if ( ! modal ) return;
+
+    function openVideo( id ) {
+        iframe.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        if ( closeBtn ) closeBtn.focus();
+    }
+    function closeVideo() {
+        modal.style.display = 'none';
+        iframe.src = '';
+        document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.yt-play-btn').forEach( function(btn) {
+        btn.addEventListener('click', function() { openVideo( this.dataset.videoId ); });
+    });
+    if ( closeBtn ) closeBtn.addEventListener('click', closeVideo);
+    if ( backdrop ) backdrop.addEventListener('click', closeVideo);
+    document.addEventListener('keydown', function(e) {
+        if ( e.key === 'Escape' && modal.style.display !== 'none' ) closeVideo();
+    });
+} )();
+</script>
