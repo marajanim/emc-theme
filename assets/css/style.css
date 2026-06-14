@@ -333,6 +333,165 @@ img { max-width: 100%; display: block; border-radius: 8px; }
 }
 
 /* ==========================================================================
+   Prayer Times Top Bar
+   ========================================================================== */
+.prayer-top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1100;
+    background: #0b1f2e;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 6px 0;
+    font-family: var(--font-body);
+}
+
+.prayer-top-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Left column: date + jumu'ah */
+.ptb-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.ptb-dates {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.ptb-gregorian {
+    color: var(--accent-gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ptb-sep {
+    color: rgba(255,255,255,0.3);
+    font-size: 0.7rem;
+}
+
+.ptb-hijri {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.68rem;
+    white-space: nowrap;
+}
+
+.ptb-jumuah {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 1px;
+}
+
+.ptb-jumuah-label {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.ptb-jumuah-time {
+    color: var(--primary-green);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+/* Right: prayer columns */
+.ptb-prayers {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+}
+
+.ptb-prayer-col {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto;
+    align-items: center;
+    text-align: center;
+    padding: 2px 14px;
+    border-left: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+    transition: background var(--trans-fast);
+}
+
+.ptb-prayer-col:hover {
+    background: rgba(255,255,255,0.04);
+}
+
+/* Highlight the currently active prayer column */
+.ptb-prayer-col.ptb-active {
+    background: rgba(42,172,160,0.12);
+}
+
+.ptb-prayer-col.ptb-active .ptb-prayer-name {
+    color: var(--primary-green);
+}
+
+.ptb-prayer-col.ptb-active .ptb-adhan {
+    color: var(--primary-green);
+}
+
+.ptb-prayer-name {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+}
+
+.ptb-row-label {
+    color: rgba(255,255,255,0.28);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+}
+
+.ptb-adhan {
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+}
+
+.ptb-iqamah {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.68rem;
+    font-weight: 500;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Push main-header below the top bar */
+.main-header {
+    top: 90px;
+}
+
+/* Push hero down to account for both bars */
+body.sticky-header-enabled .hero {
+    padding-top: calc(80px + 90px);
+}
+
+/* Hide top bar on mobile */
+@media (max-width: 768px) {
+    .prayer-top-bar { display: none; }
+    .main-header { top: 0; }
+    body.sticky-header-enabled .hero { padding-top: 80px; }
+}
+
+/* ==========================================================================
    Header & Navigation
    ========================================================================== */
 .main-header {
@@ -477,7 +636,7 @@ img { max-width: 100%; display: block; border-radius: 8px; }
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.75rem;
 }
 
 .header-prayer-compact {
@@ -485,12 +644,14 @@ img { max-width: 100%; display: block; border-radius: 8px; }
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,0.2);
     color: var(--white);
-    padding: 8px 16px;
+    padding: 5px 11px;
     border-radius: 999px;
-    font-size: var(--step--1);
+    font-size: 0.72rem;
+    line-height: 1.3;
+    white-space: nowrap;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
     transition: all var(--trans-normal);
 }
 
@@ -498,6 +659,13 @@ img { max-width: 100%; display: block; border-radius: 8px; }
     background: var(--light-bg);
     color: var(--text-main);
     border-color: var(--border-color);
+}
+
+/* Smaller Donate button scoped to the header only */
+.header-actions .btn {
+    padding: 0.45em 1em;
+    font-size: 0.72rem;
+    white-space: nowrap;
 }
 
 .header-prayer-compact i {
@@ -970,28 +1138,26 @@ img { max-width: 100%; display: block; border-radius: 8px; }
     box-shadow: 0 0 0 3px rgba(42,172,160,0.1);
 }
 
-/* Prayer Widget Animation */
 .prayer-times-widget {
-    padding: 2rem;
+    padding: 1rem 1.25rem;
     min-width: 0;
     width: 100%;
-    animation: fadeUpIn 1s var(--ease-spring) 0.2s forwards;
-    opacity: 0;
+    animation: fadeUpIn 0.9s var(--ease-spring) 0.25s both;
 }
 
 .widget-header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.6rem;
 }
 
 .countdown-timer {
     background: var(--primary-green);
     color: var(--white);
-    padding: 1.25rem 1.5rem;
-    border-radius: 16px;
-    margin-bottom: 1.25rem;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.6rem;
     text-align: center;
-    box-shadow: 0 8px 24px rgba(42,172,160,0.3);
+    box-shadow: 0 4px 14px rgba(42,172,160,0.3);
     transform: scale(1);
     transition: transform var(--trans-spring);
 }
@@ -1002,9 +1168,9 @@ img { max-width: 100%; display: block; border-radius: 8px; }
 
 .time-left {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.1;
     letter-spacing: 0.02em;
 }
 
@@ -1017,26 +1183,26 @@ img { max-width: 100%; display: block; border-radius: 8px; }
 .prayer-row {
     display: grid;
     grid-template-columns: 1.2fr auto auto;
-    gap: 0.75rem;
+    gap: 0.5rem;
     align-items: center;
-    padding: 0.85rem 1rem;
-    border-radius: 12px;
-    margin-bottom: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.15rem;
     transition: background var(--trans-fast);
 }
 
 .prayer-name {
     font-weight: 600;
-    font-size: var(--step--1);
+    font-size: 0.75rem;
     white-space: nowrap;
 }
 
 .prayer-time {
-    font-size: var(--step--1);
+    font-size: 0.75rem;
     white-space: nowrap;
-    min-width: 4.5rem;
+    min-width: 3.5rem;
     text-align: right;
-    padding-left: 0.5rem;
+    padding-left: 0.25rem;
 }
 
 .prayer-time.adhan {
@@ -3011,22 +3177,16 @@ textarea[aria-invalid="true"] {
    PHASE 10 — PAGE ENTRANCE ANIMATION
    ========================================================================== */
 
-body:not(.page-loaded) .hero-content,
-body:not(.page-loaded) .hero-widget {
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-body.page-loaded .hero-content {
+body .hero-content {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth);
+    animation: fadeUpIn 0.8s var(--ease-smooth) both;
 }
 
-body.page-loaded .hero-widget {
+body .hero-widget {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 0.8s var(--ease-smooth) 0.15s, transform 0.8s var(--ease-smooth) 0.15s;
+    animation: fadeUpIn 0.8s var(--ease-smooth) 0.15s both;
 }
 
 /* ==========================================================================
@@ -3039,8 +3199,8 @@ body.page-loaded .hero-widget {
     .faq-answer,
     .faq-body { transition: none !important; }
 
-    body.page-loaded .hero-content,
-    body.page-loaded .hero-widget { transition: none !important; }
+    body .hero-content,
+    body .hero-widget { animation: none !important; }
 }
 
 /* ==========================================================================
@@ -3413,19 +3573,120 @@ img[width][height] {
     margin-top: 3px;
 }
 
-/* service-card learn-more link */
+/* service-card dual actions */
+.service-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+}
+
 .service-card-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-top: 1.25rem;
     font-size: var(--step--1);
     font-weight: 700;
     color: var(--primary-green);
     transition: gap var(--trans-fast);
+    white-space: nowrap;
 }
 
 .service-card:hover .service-card-link { gap: 10px; }
+
+.service-card-book.btn-sm {
+    padding: 0.4em 0.9em;
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   App Download Strip
+   ========================================================================== */
+.app-download-strip {
+    background: linear-gradient(135deg, #0b2d42 0%, #1a4a6e 100%);
+    padding: 2.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.app-download-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.app-download-text h3 {
+    font-size: var(--step-1);
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.4rem;
+}
+
+.app-download-text p {
+    color: rgba(255,255,255,0.65);
+    font-size: var(--step--1);
+    margin: 0;
+}
+
+.app-download-badges {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.app-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 0.7rem 1.2rem;
+    color: #fff;
+    text-decoration: none;
+    transition: background var(--trans-fast), transform var(--trans-fast);
+    min-width: 160px;
+}
+
+.app-badge:hover {
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-2px);
+    color: #fff;
+}
+
+.app-badge-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.app-badge-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.app-badge-sub {
+    font-size: 0.6rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.app-badge-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+@media (max-width: 640px) {
+    .app-download-inner { flex-direction: column; text-align: center; }
+    .app-download-badges { justify-content: center; }
+}
 
 /* ==========================================================================
    HOMEPAGE — EVENTS SECTION  (Phase 4)

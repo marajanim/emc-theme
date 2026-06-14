@@ -7,8 +7,12 @@
 
 $title      = emc_option( 'emc_hero_title',    __( 'Advancing Faith & Community', 'emc-theme' ) );
 $subtitle   = emc_option( 'emc_hero_subtitle', __( 'Welcome to the Essex Muslim Centre. A hub for spiritual growth, education, and community welfare in the heart of Chelmsford.', 'emc-theme' ) );
-$cta1_label = emc_option( 'emc_hero_cta1_label', __( 'Donate Now', 'emc-theme' ) );
-$cta1_url   = emc_option( 'emc_hero_cta1_url', '' ) ?: ( get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donate/' ) );
+$cta1_label = emc_option( 'emc_hero_cta1_label', __( 'Get Involved', 'emc-theme' ) );
+$cta1_url   = emc_option( 'emc_hero_cta1_url', '' ) ?: (
+    get_permalink( get_page_by_path( 'about' ) )
+    ?: get_permalink( get_page_by_path( 'about-us' ) )
+    ?: home_url( '/about/' )
+);
 $cta2_label = emc_option( 'emc_hero_cta2_label', __( 'Prayer Times', 'emc-theme' ) );
 $cta2_url   = emc_option( 'emc_hero_cta2_url', '' ) ?: ( get_permalink( get_page_by_path( 'prayer-times' ) ) ?: home_url( '/prayer-times/' ) );
 

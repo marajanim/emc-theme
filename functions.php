@@ -200,6 +200,20 @@ if ( ! function_exists( 'emc_enqueue_assets' ) ) :
             true
         );
 
+        // ── Prayer Times Top Bar (sitewide) ──────────────────────────────
+        $topbar_js_path = EMC_DIR . '/assets/js/prayer-topbar.js';
+        wp_enqueue_script(
+            'emc-prayer-topbar',
+            EMC_ASSETS . '/js/prayer-topbar.js',
+            array(),
+            file_exists( $topbar_js_path ) ? filemtime( $topbar_js_path ) : EMC_VERSION,
+            true
+        );
+        // Pass the JSON data URL so the top bar JS can fetch it
+        wp_localize_script( 'emc-prayer-topbar', 'emcPrayer', array(
+            'dataUrl' => EMC_ASSETS . '/js/prayer-data.json',
+        ) );
+
         // ── Localize script data ──────────────────────────────────────────
 
         wp_localize_script( 'emc-script', 'emcData', array(
@@ -434,7 +448,14 @@ remove_action( 'wp_head', 'wp_generator' );
    ========================================================================== */
 function emc_admin_bar_offset() {
     if ( is_admin_bar_showing() ) {
-        echo '<style>.main-header { top: 32px !important; } @media screen and (max-width:782px){ .main-header { top: 46px !important; } }</style>';
+        echo '<style>
+            .prayer-top-bar { top: 32px !important; }
+            .main-header    { top: calc(32px + 90px) !important; }
+            @media screen and (max-width:782px) {
+                .prayer-top-bar { display: none; }
+                .main-header    { top: 46px !important; }
+            }
+        </style>';
     }
 }
 add_action( 'wp_head', 'emc_admin_bar_offset' );

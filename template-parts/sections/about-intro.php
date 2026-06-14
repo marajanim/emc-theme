@@ -14,8 +14,11 @@ $stat2_num   = emc_option( 'emc_about_stat2_num',   '500+' );
 $stat2_label = emc_option( 'emc_about_stat2_label', __( 'Families Served', 'emc-theme' ) );
 $stat3_num   = emc_option( 'emc_about_stat3_num',   '10+' );
 $stat3_label = emc_option( 'emc_about_stat3_label', __( 'Weekly Services', 'emc-theme' ) );
-$cta_label   = emc_option( 'emc_about_cta_label',   __( 'Learn More About Us', 'emc-theme' ) );
-$about_url   = get_permalink( get_page_by_path( 'about' ) ) ?: home_url( '/about/' );
+$cta_label   = emc_option( 'emc_about_cta_label', __( 'Learn More About Us', 'emc-theme' ) );
+$about_url   = get_permalink( get_page_by_path( 'about' ) )
+               ?: get_permalink( get_page_by_path( 'about-us' ) )
+               ?: get_permalink( get_page_by_path( 'about-emc' ) )
+               ?: home_url( '/about/' );
 ?>
 <section class="about-intro section-padding" aria-labelledby="about-intro-heading">
     <div class="container">

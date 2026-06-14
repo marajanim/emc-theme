@@ -99,6 +99,39 @@ $cookie_decline = emc_option( 'emc_cookie_decline_label', __( 'Decline', 'emc-th
 </div>
 <?php endif; ?>
 
+<?php /* ── Prayer Times Top Bar ──────────────────────────────────────── */ ?>
+<div class="prayer-top-bar" id="prayer-top-bar" role="complementary" aria-label="<?php esc_attr_e( 'Today\'s prayer times', 'emc-theme' ); ?>">
+    <div class="container prayer-top-bar-inner">
+
+        <!-- Left: Date & Jumu'ah -->
+        <div class="ptb-left">
+            <div class="ptb-dates">
+                <span class="ptb-gregorian" id="ptb-gregorian"><?php echo esc_html( date_i18n( 'j F Y' ) ); ?></span>
+                <span class="ptb-sep" aria-hidden="true">·</span>
+                <span class="ptb-hijri" id="ptb-hijri"><?php esc_html_e( 'Loading…', 'emc-theme' ); ?></span>
+            </div>
+            <div class="ptb-jumuah" id="ptb-jumuah-wrap">
+                <span class="ptb-jumuah-label"><?php esc_html_e( "Jumu'ah", 'emc-theme' ); ?></span>
+                <span class="ptb-jumuah-time" id="ptb-jumuah">--:--</span>
+            </div>
+        </div>
+
+        <!-- Right: 5 Prayer columns -->
+        <div class="ptb-prayers" role="table" aria-label="<?php esc_attr_e( 'Prayer times table', 'emc-theme' ); ?>">
+            <?php foreach ( array( 'fajr' => 'Fajr', 'dhuhr' => 'Dhuhr', 'asr' => 'Asr', 'maghrib' => 'Maghrib', 'isha' => 'Isha' ) as $key => $label ) : ?>
+            <div class="ptb-prayer-col" data-prayer="<?php echo esc_attr( $key ); ?>" role="columnheader">
+                <span class="ptb-prayer-name"><?php echo esc_html( $label ); ?></span>
+                <span class="ptb-row-label"><?php esc_html_e( "Adhan", 'emc-theme' ); ?></span>
+                <span class="ptb-adhan" id="ptb-adhan-<?php echo esc_attr( $key ); ?>">--:--</span>
+                <span class="ptb-row-label"><?php esc_html_e( "Iqamah", 'emc-theme' ); ?></span>
+                <span class="ptb-iqamah" id="ptb-iqamah-<?php echo esc_attr( $key ); ?>">--:--</span>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+    </div>
+</div>
+
 <?php /* ── Main Header ──────────────────────────────────────────────────── */ ?>
 <?php /* Skip native header when Elementor Pro theme builder provides one. */ ?>
 <?php if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'header' ) ) : ?>

@@ -280,14 +280,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ==========================================================================
        Prayer Strip / Widgets — Load real today's times from prayer-data.json
-       Updates:  .prayer-strip-item[data-prayer] .prayer-strip-time
-                 .pwc-item[data-prayer]           .pwc-time
-                 .pwf-row[data-prayer]            .pwf-adhan / .pwf-iqamah
+       Updates:  .prayer-strip-item[data-prayer]  .prayer-strip-time
+                 .pwc-item[data-prayer]            .pwc-time
+                 .pwf-row[data-prayer]             .pwf-adhan / .pwf-iqamah
+                 .prayer-row[data-prayer]          .prayer-time.adhan / .prayer-time.iqama  (hero widget)
+                 #prayer-countdown                 live countdown
+                 #header-next-prayer               header compact label
        ========================================================================== */
-    const prayerStripItems = document.querySelectorAll('.prayer-strip-item, .pwc-item, .pwf-row');
-    if (prayerStripItems.length > 0 && typeof emcData !== 'undefined') {
-        // Derive JSON URL from theme URI
+    if (typeof emcData !== 'undefined') {
         const dataUrl = emcData.themeUri + '/assets/js/prayer-data.json';
+
+        // Parse "HH:MM" -> total minutes
+        function parseMins(str) {
+            if (!str || !str.trim()) return null;
+            const p = str.trim().split(':');
+            return p.length < 2 ? null : parseInt(p[0],10)*60 + parseInt(p[1],10);
+        }
 
         // Format "HH:MM" (24h) -> "H:MM AM/PM"
         function fmtT(str) {
@@ -299,10 +307,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Build today's key "DD/MM/YYYY"
-        const now = new Date();
-        const dd  = String(now.getDate()).padStart(2,'0');
-        const mm  = String(now.getMonth()+1).padStart(2,'0');
-        const todayKey = `${dd}/${mm}/${now.getFullYear()}`;
+        const _now = new Date();
+        const _dd  = String(_now.getDate()).padStart(2,'0');
+        const _mm  = String(_now.getMonth()+1).padStart(2,'0');
+        const todayKey = `${_dd}/${_mm}/${_now.getFullYear()}`;
 
         fetch(dataUrl)
             .then(r => r.json())
@@ -310,33 +318,90 @@ document.addEventListener('DOMContentLoaded', () => {
                 const entry = data.find(e => e.date === todayKey);
                 if (!entry) return;
 
-                const adhan  = entry.adhan;
-                const iqamah = entry.iqamah;
+                const adhan  = entry.adhan  || {};
+                const iqamah = entry.iqamah || {};
 
-                // Prayer strip (homepage section)
+                // ── Prayer strip (homepage section) ───────────────────────
                 document.querySelectorAll('.prayer-strip-item[data-prayer]').forEach(el => {
-                    const key  = el.getAttribute('data-prayer');
+                    const key    = el.getAttribute('data-prayer');
                     const timeEl = el.querySelector('.prayer-strip-time');
                     if (timeEl && adhan[key]) timeEl.textContent = fmtT(adhan[key]);
                 });
 
-                // Compact widget
+                // ── Compact widget ─────────────────────────────────────────
                 document.querySelectorAll('.pwc-item[data-prayer]').forEach(el => {
-                    const key  = el.getAttribute('data-prayer');
+                    const key    = el.getAttribute('data-prayer');
                     const timeEl = el.querySelector('.pwc-time');
                     if (timeEl && adhan[key]) timeEl.textContent = fmtT(adhan[key]);
                 });
 
-                // Full widget
+                // ── Full widget ────────────────────────────────────────────
                 document.querySelectorAll('.pwf-row[data-prayer]').forEach(el => {
                     const key     = el.getAttribute('data-prayer');
                     const adhanEl = el.querySelector('.pwf-adhan');
                     const iqamaEl = el.querySelector('.pwf-iqamah');
-                    if (adhanEl && adhan[key])  adhanEl.textContent  = fmtT(adhan[key]);
-                    if (iqamaEl && iqamah[key]) iqamaEl.textContent  = fmtT(iqamah[key]);
+                    if (adhanEl && adhan[key])  adhanEl.textContent = fmtT(adhan[key]);
+                    if (iqamaEl && iqamah[key]) iqamaEl.textContent = fmtT(iqamah[key]);
                 });
+
+                // ── Hero Daily Salah widget (.prayer-row) ─────────────────
+                document.querySelectorAll('.prayer-row[data-prayer]').forEach(el => {
+                    const key     = el.getAttribute('data-prayer');
+                    const adhanEl = el.querySelector('.prayer-time.adhan');
+                    const iqamaEl = el.querySelector('.prayer-time.iqama');
+                    if (adhanEl && adhan[key])  adhanEl.textContent = fmtT(adhan[key]);
+                    if (iqamaEl && iqamah[key]) iqamaEl.textContent = fmtT(iqamah[key]);
+                });
+
+                // ── Hero countdown + header compact ───────────────────────
+                const PRAYERS_ORDER = ['fajr','dhuhr','asr','maghrib','isha'];
+                const prayerMins = PRAYERS_ORDER
+                    .map(k => ({ key: k, mins: parseMins(adhan[k]) }))
+                    .filter(p => p.mins !== null);
+
+                function updateHeroCountdown() {
+                    const t       = new Date();
+                    const nowMins = t.getHours()*60 + t.getMinutes();
+                    const nowSecs = t.getSeconds();
+
+                    let next = prayerMins.find(p => p.mins > nowMins) || prayerMins[0];
+
+                    // Highlight active row in hero widget
+                    document.querySelectorAll('.prayer-row').forEach(row => {
+                        row.classList.toggle('active', row.getAttribute('data-prayer') === next.key);
+                    });
+
+                    // Hero countdown timer
+                    const countdownEl = document.getElementById('prayer-countdown');
+                    const labelEl     = document.getElementById('next-prayer-label');
+                    if (countdownEl) {
+                        let diff = next.mins - nowMins;
+                        if (diff < 0) diff += 1440;
+                        let secs = diff * 60 - nowSecs;
+                        if (secs < 0) secs = 0;
+                        const hh = Math.floor(secs/3600);
+                        const mm = Math.floor((secs%3600)/60);
+                        const ss = secs % 60;
+                        const pad = n => String(n).padStart(2,'0');
+                        countdownEl.textContent = `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
+                    }
+                    if (labelEl) {
+                        const label = next.key.charAt(0).toUpperCase() + next.key.slice(1);
+                        labelEl.textContent = `Next Prayer: ${label}`;
+                    }
+
+                    // Header compact prayer label
+                    const headerPrayer  = document.getElementById('header-next-prayer');
+                    const mobilePrayer  = document.getElementById('mobile-next-prayer');
+                    const label = next.key.charAt(0).toUpperCase() + next.key.slice(1);
+                    if (headerPrayer) headerPrayer.textContent = label;
+                    if (mobilePrayer) mobilePrayer.textContent = label;
+                }
+
+                updateHeroCountdown();
+                setInterval(updateHeroCountdown, 1000);
             })
-            .catch(() => { /* silently fail — times remain as --:-- */ });
+            .catch(() => { /* silently fail */ });
     }
 
 });

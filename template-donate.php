@@ -11,7 +11,8 @@
 
 get_header();
 
-wp_enqueue_style( 'emc-page-donate', EMC_ASSETS . '/css/donate.css', array( 'emc-style' ), EMC_VERSION );
+wp_enqueue_style( 'emc-page-donate',  EMC_ASSETS . '/css/donate.css',  array( 'emc-style' ), EMC_VERSION );
+wp_enqueue_style( 'emc-page-ramadan', EMC_ASSETS . '/css/ramadan.css', array( 'emc-style' ), EMC_VERSION );
 
 $donate_js_path = EMC_DIR . '/assets/js/donate.js';
 if ( file_exists( $donate_js_path ) ) {
@@ -119,26 +120,36 @@ if ( file_exists( $donate_js_path ) ) {
                     </div>
                 </div>
 
-                <!-- RAMADAN TAB -->
+                <!-- RAMADAN LINK CARD (replaces inline tab) -->
                 <div class="tab-panel" id="tab-ramadan-tab">
-                    <div class="form-card glass-card ramadan-card">
-                        <div class="ramadan-header">
-                            <span class="ramadan-badge"><i class="fas fa-moon"></i> <?php echo esc_html( emc_acf( 'donate_ramadan_badge', 'Ramadan 1447 AH' ) ); ?></span>
-                            <h3><?php echo esc_html( emc_acf( 'donate_ramadan_heading', 'Ramadan Daily Giving' ) ); ?></h3>
-                            <p class="form-desc"><?php echo esc_html( emc_acf( 'donate_ramadan_desc', 'Schedule daily automatic donations for the blessed month of Ramadan.' ) ); ?></p>
+                    <div class="form-card glass-card ramadan-link-card">
+                        <div class="ramadan-link-inner">
+                            <div class="ramadan-link-icon" aria-hidden="true">
+                                <i class="fas fa-moon"></i>
+                                <i class="fas fa-star ramadan-star"></i>
+                            </div>
+                            <div class="ramadan-link-text">
+                                <span class="ramadan-badge"><i class="fas fa-moon"></i> <?php echo esc_html( emc_acf( 'donate_ramadan_badge', 'Ramadan 1447 AH' ) ); ?></span>
+                                <h3><?php esc_html_e( 'Ramadan Daily Giving', 'emc-theme' ); ?></h3>
+                                <p><?php esc_html_e( 'Schedule daily sadaqah, maximise your Last 10 Nights, and calculate your Fitrana — all on our dedicated Ramadan Giving page.', 'emc-theme' ); ?></p>
+                                <ul class="ramadan-features">
+                                    <li><i class="fas fa-check-circle"></i> <?php esc_html_e( 'Daily auto-giving for Full Ramadan / Last 10 Nights / Odd Nights', 'emc-theme' ); ?></li>
+                                    <li><i class="fas fa-check-circle"></i> <?php esc_html_e( 'Live countdown to next Ramadan', 'emc-theme' ); ?></li>
+                                    <li><i class="fas fa-check-circle"></i> <?php esc_html_e( 'Fitrana & Fidya calculator', 'emc-theme' ); ?></li>
+                                    <li><i class="fas fa-check-circle"></i> <?php esc_html_e( 'Sadaqah Jariyah dedication', 'emc-theme' ); ?></li>
+                                </ul>
+                                <?php
+                                $ramadan_url = get_permalink( get_page_by_path( 'ramadan-givings' ) )
+                                               ?: get_permalink( get_page_by_path( 'ramadan' ) )
+                                               ?: home_url( '/ramadan-givings/' );
+                                ?>
+                                <a href="<?php echo esc_url( $ramadan_url ); ?>" class="btn btn-primary" style="margin-top:1.5rem;">
+                                    <i class="fas fa-moon" aria-hidden="true"></i>
+                                    <?php esc_html_e( 'Go to Ramadan Giving Page', 'emc-theme' ); ?>
+                                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div class="ramadan-countdown"><p><?php esc_html_e( 'Next Ramadan begins in', 'emc-theme' ); ?></p><div class="countdown-grid"><div class="countdown-cell"><span id="r-days">285</span><small><?php esc_html_e( 'Days', 'emc-theme' ); ?></small></div><div class="countdown-cell"><span id="r-hours">14</span><small><?php esc_html_e( 'Hours', 'emc-theme' ); ?></small></div><div class="countdown-cell"><span id="r-mins">32</span><small><?php esc_html_e( 'Mins', 'emc-theme' ); ?></small></div></div></div>
-                        <div class="form-group"><label><?php esc_html_e( 'Daily Amount', 'emc-theme' ); ?></label><div class="amount-grid"><button class="amount-btn">£1</button><button class="amount-btn active">£3</button><button class="amount-btn">£5</button><button class="amount-btn">£10</button><button class="amount-btn custom-other"><?php esc_html_e( 'Other', 'emc-theme' ); ?></button></div></div>
-                        <div class="form-group"><label><?php esc_html_e( 'Giving Period', 'emc-theme' ); ?></label><div class="giving-period-grid"><label class="period-option"><input type="radio" name="period" value="full" checked><div class="period-card"><i class="fas fa-calendar-check"></i><strong><?php echo esc_html( emc_acf( 'donate_ramadan_period_full', 'Full Ramadan' ) ); ?></strong><small><?php esc_html_e( '29–30 days', 'emc-theme' ); ?></small></div></label><label class="period-option"><input type="radio" name="period" value="last10"><div class="period-card"><i class="fas fa-star"></i><strong><?php echo esc_html( emc_acf( 'donate_ramadan_period_10', 'Last 10 Nights' ) ); ?></strong><small><?php esc_html_e( 'Final 10 days', 'emc-theme' ); ?></small></div></label><label class="period-option"><input type="radio" name="period" value="odd"><div class="period-card"><i class="fas fa-moon"></i><strong><?php echo esc_html( emc_acf( 'donate_ramadan_period_odd', 'Odd Nights' ) ); ?></strong><small><?php esc_html_e( 'Nights 21,23,25,27,29', 'emc-theme' ); ?></small></div></label></div></div>
-                        <div class="schedule-summary"><p><?php esc_html_e( 'Your total scheduled giving:', 'emc-theme' ); ?></p><div class="total-amount">£90 <span>(30 × £3)</span></div></div>
-                        <button class="btn btn-primary donate-submit" style="background: linear-gradient(135deg, #2C3E7A, #7A3C2C);"><i class="fas fa-moon"></i> <?php echo esc_html( emc_acf( 'donate_ramadan_btn', 'Schedule Ramadan Giving' ) ); ?></button>
-                    </div>
-                </div>
-                        <div class="ramadan-countdown"><p><?php esc_html_e( 'Next Ramadan begins in', 'emc-theme' ); ?></p><div class="countdown-grid"><div class="countdown-cell"><span id="r-days">285</span><small><?php esc_html_e( 'Days', 'emc-theme' ); ?></small></div><div class="countdown-cell"><span id="r-hours">14</span><small><?php esc_html_e( 'Hours', 'emc-theme' ); ?></small></div><div class="countdown-cell"><span id="r-mins">32</span><small><?php esc_html_e( 'Mins', 'emc-theme' ); ?></small></div></div></div>
-                        <div class="form-group"><label><?php esc_html_e( 'Daily Amount', 'emc-theme' ); ?></label><div class="amount-grid"><button class="amount-btn">£1</button><button class="amount-btn active">£3</button><button class="amount-btn">£5</button><button class="amount-btn">£10</button><button class="amount-btn custom-other"><?php esc_html_e( 'Other', 'emc-theme' ); ?></button></div></div>
-                        <div class="form-group"><label><?php esc_html_e( 'Giving Period', 'emc-theme' ); ?></label><div class="giving-period-grid"><label class="period-option"><input type="radio" name="period" value="full" checked><div class="period-card"><i class="fas fa-calendar-check"></i><strong><?php esc_html_e( 'Full Ramadan', 'emc-theme' ); ?></strong><small><?php esc_html_e( '29–30 days', 'emc-theme' ); ?></small></div></label><label class="period-option"><input type="radio" name="period" value="last10"><div class="period-card"><i class="fas fa-star"></i><strong><?php esc_html_e( 'Last 10 Nights', 'emc-theme' ); ?></strong><small><?php esc_html_e( 'Final 10 days', 'emc-theme' ); ?></small></div></label><label class="period-option"><input type="radio" name="period" value="odd"><div class="period-card"><i class="fas fa-moon"></i><strong><?php esc_html_e( 'Odd Nights', 'emc-theme' ); ?></strong><small><?php esc_html_e( 'Nights 21,23,25,27,29', 'emc-theme' ); ?></small></div></label></div></div>
-                        <div class="schedule-summary"><p><?php esc_html_e( 'Your total scheduled giving:', 'emc-theme' ); ?></p><div class="total-amount">£90 <span>(30 × £3)</span></div></div>
-                        <button class="btn btn-primary donate-submit" style="background: linear-gradient(135deg, #2C3E7A, #7A3C2C);"><i class="fas fa-moon"></i> <?php esc_html_e( 'Schedule Ramadan Giving', 'emc-theme' ); ?></button>
                     </div>
                 </div>
 
@@ -214,6 +225,111 @@ if ( file_exists( $donate_js_path ) ) {
                 </div>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     OTHER WAYS TO DONATE
+     ═══════════════════════════════════════════════════════ -->
+<section class="other-ways-section section-padding" id="other-ways-to-donate">
+    <div class="container">
+        <div class="section-header">
+            <span class="subtitle"><i class="fas fa-hand-holding-heart"></i> <?php esc_html_e( 'More Ways to Give', 'emc-theme' ); ?></span>
+            <h2><?php esc_html_e( 'Other Ways to Donate', 'emc-theme' ); ?></h2>
+            <p style="color:var(--text-muted);max-width:640px;margin:0 auto;"><?php esc_html_e( 'Prefer to give offline? We\'re grateful for every contribution, however you choose to give.', 'emc-theme' ); ?></p>
+        </div>
+
+        <div class="other-ways-grid">
+
+            <!-- Bank Transfer -->
+            <div class="other-way-card glass-card">
+                <div class="other-way-icon"><i class="fas fa-university"></i></div>
+                <h3><?php esc_html_e( 'Bank Transfer', 'emc-theme' ); ?></h3>
+                <p class="other-way-desc"><?php esc_html_e( 'Send a direct payment to our account. Please use your name as the reference.', 'emc-theme' ); ?></p>
+                <div class="bank-details">
+                    <div class="bank-row"><span><?php esc_html_e( 'Account Name', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_acf( 'donate_bank_name', 'Essex Muslim Centre' ) ); ?></strong></div>
+                    <div class="bank-row"><span><?php esc_html_e( 'Bank', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_acf( 'donate_bank_bank', '[Bank Name]' ) ); ?></strong></div>
+                    <div class="bank-row"><span><?php esc_html_e( 'Sort Code', 'emc-theme' ); ?></span><strong class="mono"><?php echo esc_html( emc_acf( 'donate_bank_sort', 'XX-XX-XX' ) ); ?></strong></div>
+                    <div class="bank-row"><span><?php esc_html_e( 'Account No.', 'emc-theme' ); ?></span><strong class="mono"><?php echo esc_html( emc_acf( 'donate_bank_account', 'XXXXXXXX' ) ); ?></strong></div>
+                </div>
+                <p class="other-way-note"><i class="fas fa-info-circle"></i> <?php esc_html_e( 'Please quote your name as the payment reference so we can identify your gift.', 'emc-theme' ); ?></p>
+            </div>
+
+            <!-- Standing Order -->
+            <div class="other-way-card glass-card">
+                <div class="other-way-icon"><i class="fas fa-file-alt"></i></div>
+                <h3><?php esc_html_e( 'Standing Order', 'emc-theme' ); ?></h3>
+                <p class="other-way-desc"><?php esc_html_e( 'Set up a regular donation directly with your bank. Download, complete, and post the form to your branch.', 'emc-theme' ); ?></p>
+                <ul class="other-way-steps">
+                    <li><span>1</span><?php esc_html_e( 'Download the standing order form below', 'emc-theme' ); ?></li>
+                    <li><span>2</span><?php esc_html_e( 'Complete with your bank details and chosen amount', 'emc-theme' ); ?></li>
+                    <li><span>3</span><?php esc_html_e( 'Post or hand in to your bank branch', 'emc-theme' ); ?></li>
+                </ul>
+                <?php $so_url = emc_acf( 'donate_so_pdf', '#' ); ?>
+                <a href="<?php echo esc_url( $so_url ); ?>" class="btn btn-outline" <?php if ( $so_url !== '#' ) echo 'download target="_blank" rel="noopener"'; ?>>
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                    <?php esc_html_e( 'Download Standing Order Form', 'emc-theme' ); ?>
+                </a>
+                <p class="other-way-note"><i class="fas fa-lock"></i> <?php esc_html_e( 'Donations are strictly non-refundable once processed.', 'emc-theme' ); ?></p>
+            </div>
+
+            <!-- Cheque / Post -->
+            <div class="other-way-card glass-card">
+                <div class="other-way-icon"><i class="fas fa-envelope-open-text"></i></div>
+                <h3><?php esc_html_e( 'Cheque by Post', 'emc-theme' ); ?></h3>
+                <p class="other-way-desc"><?php esc_html_e( 'Send a one-off cheque made payable to our charity and post to our address.', 'emc-theme' ); ?></p>
+                <div class="bank-details">
+                    <div class="bank-row"><span><?php esc_html_e( 'Payable to', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_acf( 'donate_bank_name', 'Essex Muslim Centre' ) ); ?></strong></div>
+                    <div class="bank-row"><span><?php esc_html_e( 'Post to', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_option( 'emc_footer_address', "Victoria Road\nChelmsford\nCM1 1LW" ) ); ?></strong></div>
+                </div>
+                <p class="other-way-note"><i class="fas fa-info-circle"></i> <?php esc_html_e( 'Please include your name and a note indicating the fund (e.g. General / Building).', 'emc-theme' ); ?></p>
+            </div>
+
+            <!-- Cash / In-Mosque -->
+            <div class="other-way-card glass-card">
+                <div class="other-way-icon"><i class="fas fa-mosque"></i></div>
+                <h3><?php esc_html_e( 'In-Mosque Giving', 'emc-theme' ); ?></h3>
+                <p class="other-way-desc"><?php esc_html_e( 'Drop your donation in the collection boxes at our reception or during Jumu\'ah prayers.', 'emc-theme' ); ?></p>
+                <ul class="other-way-steps">
+                    <li><span><i class="fas fa-box"></i></span><?php esc_html_e( 'Donation boxes at reception (open daily)', 'emc-theme' ); ?></li>
+                    <li><span><i class="fas fa-praying-hands"></i></span><?php esc_html_e( 'Jumu\'ah collection — Fridays 13:15 & 14:15', 'emc-theme' ); ?></li>
+                    <li><span><i class="fas fa-hand-holding-heart"></i></span><?php esc_html_e( 'Envelope donations available at the front desk', 'emc-theme' ); ?></li>
+                </ul>
+            </div>
+
+            <!-- Membership -->
+            <div class="other-way-card glass-card other-way-featured">
+                <div class="other-way-icon"><i class="fas fa-id-card"></i></div>
+                <h3><?php esc_html_e( 'Membership', 'emc-theme' ); ?></h3>
+                <p class="other-way-desc"><?php esc_html_e( 'Memberships enable regular support that gives your mosque the stability it needs. If EMC matters to you, a membership is a way to support it with consistency, care and intention.', 'emc-theme' ); ?></p>
+                <?php $member_url = get_permalink( get_page_by_path( 'membership' ) ) ?: home_url( '/membership/' ); ?>
+                <a href="<?php echo esc_url( $member_url ); ?>" class="btn btn-primary">
+                    <i class="fas fa-id-card" aria-hidden="true"></i>
+                    <?php esc_html_e( 'Become a Member', 'emc-theme' ); ?>
+                </a>
+            </div>
+
+            <!-- Fundraise -->
+            <div class="other-way-card glass-card">
+                <div class="other-way-icon"><i class="fas fa-running"></i></div>
+                <h3><?php esc_html_e( 'Fundraise for Us', 'emc-theme' ); ?></h3>
+                <p class="other-way-desc"><?php esc_html_e( 'Running, cycling, or organising an event? Raise funds for EMC through JustGiving or contact us to set up a bespoke campaign.', 'emc-theme' ); ?></p>
+                <?php $jg_url = emc_acf( 'donate_justgiving_url', '#' ); ?>
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                    <?php if ( $jg_url && $jg_url !== '#' ) : ?>
+                    <a href="<?php echo esc_url( $jg_url ); ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        <?php esc_html_e( 'JustGiving Page', 'emc-theme' ); ?>
+                    </a>
+                    <?php endif; ?>
+                    <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'contact' ) ) ?: home_url( '/contact/' ) ); ?>" class="btn btn-outline">
+                        <i class="fas fa-envelope" aria-hidden="true"></i>
+                        <?php esc_html_e( 'Get in Touch', 'emc-theme' ); ?>
+                    </a>
+                </div>
+            </div>
+
+        </div><!-- .other-ways-grid -->
     </div>
 </section>
 

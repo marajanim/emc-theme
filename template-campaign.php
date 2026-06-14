@@ -99,47 +99,141 @@ $percent    = $target > 0 ? min( 100, round( ( $raised / $target ) * 100 ) ) : 0
     </div>
 </section>
 
-<!-- Donor Wall -->
-<section class="donor-wall section-padding" aria-label="<?php esc_attr_e( 'Donor wall', 'emc-theme' ); ?>">
+<!-- Badr Wall — Tiered Donor Recognition -->
+<section class="donor-wall section-padding" aria-label="<?php esc_attr_e( 'Badr Wall of Honour', 'emc-theme' ); ?>">
     <div class="container">
-        <div class="text-center" style="margin-bottom:3rem;">
-            <h2><?php esc_html_e( 'The 313 Wall of Honour', 'emc-theme' ); ?></h2>
-            <p style="color:var(--text-muted);max-width:600px;margin:0 auto;">
-                <?php esc_html_e( 'Join our growing community of supporters. Each slot represents one of the 313 founding donors.', 'emc-theme' ); ?>
+        <div class="text-center" style="margin-bottom:1.5rem;">
+            <span class="campaign-tag" style="margin-bottom:1rem;"><i class="fas fa-star-and-crescent"></i> <?php esc_html_e( 'The Badr Wall', 'emc-theme' ); ?></span>
+            <h2><?php esc_html_e( 'Wall of Honour', 'emc-theme' ); ?></h2>
+            <p style="color:rgba(255,255,255,0.65);max-width:600px;margin:0 auto;">
+                <?php esc_html_e( 'Inspired by the 313 companions of Badr — join our founding donors and be honoured permanently on this wall.', 'emc-theme' ); ?>
             </p>
         </div>
-        <div class="donor-slots-grid">
-            <?php
-            $filled_count = min( $donors, 313 );
-            $empty_count  = 313 - $filled_count;
 
-            // Show first 24 filled slots visually
-            $display_filled = min( $filled_count, 24 );
-            $display_empty  = min( $empty_count, 12 );
-
-            for ( $i = 0; $i < $display_filled; $i++ ) :
-            ?>
-            <div class="donor-slot filled">
-                <i class="fas fa-user-check" aria-hidden="true"></i>
-                <span><?php printf( esc_html__( 'Donor #%d', 'emc-theme' ), $i + 1 ); ?></span>
+        <!-- Tier Legend -->
+        <div class="badr-tier-legend">
+            <div class="tier-legend-item tier-founder">
+                <i class="fas fa-crown"></i>
+                <div>
+                    <strong><?php esc_html_e( 'Founder of the Mosque', 'emc-theme' ); ?></strong>
+                    <span><?php esc_html_e( '£1,000+ or £313/month pledge', 'emc-theme' ); ?></span>
+                </div>
             </div>
-            <?php endfor; ?>
-
-            <?php for ( $i = 0; $i < $display_empty; $i++ ) : ?>
-            <a href="<?php echo esc_url( $cta_url ); ?>" class="donor-slot empty">
-                <i class="fas fa-plus-circle" aria-hidden="true"></i>
-                <span><?php esc_html_e( 'Be a donor', 'emc-theme' ); ?></span>
-            </a>
-            <?php endfor; ?>
+            <div class="tier-legend-item tier-cofunder">
+                <i class="fas fa-award"></i>
+                <div>
+                    <strong><?php esc_html_e( 'Co-Founder of the Mosque', 'emc-theme' ); ?></strong>
+                    <span><?php esc_html_e( '£313 – £999 contribution', 'emc-theme' ); ?></span>
+                </div>
+            </div>
+            <div class="tier-legend-item tier-supporter">
+                <i class="fas fa-medal"></i>
+                <div>
+                    <strong><?php esc_html_e( 'Supporter', 'emc-theme' ); ?></strong>
+                    <span><?php esc_html_e( '£100 – £312 contribution', 'emc-theme' ); ?></span>
+                </div>
+            </div>
+            <div class="tier-legend-item tier-friend">
+                <i class="fas fa-heart"></i>
+                <div>
+                    <strong><?php esc_html_e( 'Friend of the Mosque', 'emc-theme' ); ?></strong>
+                    <span><?php esc_html_e( 'Any generous contribution', 'emc-theme' ); ?></span>
+                </div>
+            </div>
         </div>
-        <?php if ( $filled_count > $display_filled || $empty_count > $display_empty ) : ?>
-        <p class="text-center" style="margin-top:2rem;color:var(--text-muted);font-size:var(--step--1);">
-            <strong><?php echo esc_html( number_format( $filled_count ) ); ?></strong>
-            <?php printf( esc_html__( 'of 313 slots filled — %d remaining', 'emc-theme' ), 313 - $filled_count ); ?>
-        </p>
-        <?php endif; ?>
+
+        <?php
+        $tiers = array(
+            array(
+                'id'       => 'founder',
+                'label'    => __( 'Founder of the Mosque', 'emc-theme' ),
+                'icon'     => 'fas fa-crown',
+                'class'    => 'tier-founder',
+                'total'    => 10,
+                'filled'   => min( (int) emc_option( 'emc_campaign_tier1_filled', 2 ), 10 ),
+                'desc'     => __( '£1,000+ — 10 founding places', 'emc-theme' ),
+            ),
+            array(
+                'id'       => 'cofunder',
+                'label'    => __( 'Co-Founder of the Mosque', 'emc-theme' ),
+                'icon'     => 'fas fa-award',
+                'class'    => 'tier-cofunder',
+                'total'    => 30,
+                'filled'   => min( (int) emc_option( 'emc_campaign_tier2_filled', 8 ), 30 ),
+                'desc'     => __( '£313–£999 — 30 places', 'emc-theme' ),
+            ),
+            array(
+                'id'       => 'supporter',
+                'label'    => __( 'Supporter', 'emc-theme' ),
+                'icon'     => 'fas fa-medal',
+                'class'    => 'tier-supporter',
+                'total'    => 100,
+                'filled'   => min( (int) emc_option( 'emc_campaign_tier3_filled', 35 ), 100 ),
+                'desc'     => __( '£100–£312 — 100 places', 'emc-theme' ),
+            ),
+            array(
+                'id'       => 'friend',
+                'label'    => __( 'Friend of the Mosque', 'emc-theme' ),
+                'icon'     => 'fas fa-heart',
+                'class'    => 'tier-friend',
+                'total'    => 173,
+                'filled'   => min( max( 0, $donors - 45 ), 173 ),
+                'desc'     => __( 'Any amount — 173 places', 'emc-theme' ),
+            ),
+        );
+        ?>
+
+        <?php foreach ( $tiers as $tier ) :
+            $empty = $tier['total'] - $tier['filled'];
+            $show_filled = min( $tier['filled'], 12 );
+            $show_empty  = min( $empty, 6 );
+        ?>
+        <div class="badr-tier-section" id="badr-<?php echo esc_attr( $tier['id'] ); ?>">
+            <div class="badr-tier-header">
+                <div class="badr-tier-title <?php echo esc_attr( $tier['class'] ); ?>">
+                    <i class="<?php echo esc_attr( $tier['icon'] ); ?>" aria-hidden="true"></i>
+                    <div>
+                        <h3><?php echo esc_html( $tier['label'] ); ?></h3>
+                        <p><?php echo esc_html( $tier['desc'] ); ?></p>
+                    </div>
+                </div>
+                <div class="badr-tier-count">
+                    <span class="filled-count"><?php echo esc_html( $tier['filled'] ); ?></span>
+                    <span class="total-count">/ <?php echo esc_html( $tier['total'] ); ?> <?php esc_html_e( 'filled', 'emc-theme' ); ?></span>
+                </div>
+            </div>
+            <div class="donor-slots-grid badr-slots">
+                <?php for ( $i = 0; $i < $show_filled; $i++ ) : ?>
+                <div class="donor-slot filled <?php echo esc_attr( $tier['class'] ); ?>">
+                    <i class="<?php echo esc_attr( $tier['icon'] ); ?>" aria-hidden="true"></i>
+                    <span><?php printf( esc_html__( 'Donor #%d', 'emc-theme' ), $i + 1 ); ?></span>
+                </div>
+                <?php endfor; ?>
+                <?php for ( $i = 0; $i < $show_empty; $i++ ) : ?>
+                <a href="<?php echo esc_url( $cta_url ); ?>" class="donor-slot empty <?php echo esc_attr( $tier['class'] ); ?>-empty">
+                    <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                    <span><?php esc_html_e( 'Claim your place', 'emc-theme' ); ?></span>
+                </a>
+                <?php endfor; ?>
+                <?php if ( $tier['filled'] > $show_filled || $empty > $show_empty ) : ?>
+                <div class="badr-more-slots">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <span><?php printf( esc_html__( '%d more places available', 'emc-theme' ), max( 0, $empty ) ); ?></span>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
+
+        <div class="text-center" style="margin-top:3rem;">
+            <a href="<?php echo esc_url( $cta_url ); ?>" class="btn btn-primary" style="font-size:var(--step-0);padding:1rem 2.5rem;">
+                <i class="fas fa-heart" aria-hidden="true"></i>
+                <?php esc_html_e( 'Secure Your Place on the Badr Wall', 'emc-theme' ); ?>
+            </a>
+        </div>
     </div>
 </section>
+
 
 <!-- Campaign Donate Section -->
 <section class="section-padding" style="background:var(--light-bg);" aria-label="<?php esc_attr_e( 'Campaign donation', 'emc-theme' ); ?>">

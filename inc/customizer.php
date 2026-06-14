@@ -398,6 +398,13 @@ function emc_customize_register( $wp_customize ) {
     emc_add_checkbox_setting( $wp_customize, 'emc_footer_show_gift_aid', true,
         'emc_footer_opts', __( 'Show Gift Aid link in footer bar', 'emc-theme' ) );
 
+    // — App Download Links
+    emc_add_url_setting( $wp_customize, 'emc_ios_app_url', '',
+        'emc_footer_opts', __( 'iOS App Store URL (leave blank to hide app strip)', 'emc-theme' ) );
+
+    emc_add_url_setting( $wp_customize, 'emc_android_app_url', '',
+        'emc_footer_opts', __( 'Android Google Play URL (leave blank to hide app strip)', 'emc-theme' ) );
+
     /* ──────────────────────────────────────────────────────────────────────
        SECTION: Cookie Consent
        ────────────────────────────────────────────────────────────────────── */
@@ -661,6 +668,17 @@ function emc_customize_register( $wp_customize ) {
 
     emc_add_url_setting( $wp_customize, 'emc_campaign_cta_url', '',
         'emc_hp_campaign', __( 'Donate Button URL (blank = /donate/)', 'emc-theme' ) );
+
+    // ── Badr Wall Tier Fill Counts ─────────────────────────────────────────
+    emc_add_text_setting( $wp_customize, 'emc_campaign_tier1_filled', '2',
+        'emc_hp_campaign', __( 'Badr Wall — Founders filled (max 10)', 'emc-theme' ) );
+
+    emc_add_text_setting( $wp_customize, 'emc_campaign_tier2_filled', '8',
+        'emc_hp_campaign', __( 'Badr Wall — Co-Founders filled (max 30)', 'emc-theme' ) );
+
+    emc_add_text_setting( $wp_customize, 'emc_campaign_tier3_filled', '35',
+        'emc_hp_campaign', __( 'Badr Wall — Supporters filled (max 100)', 'emc-theme' ) );
+
 
     /* ── Counters / Stats Section ───────────────────────────────────────── */
     $wp_customize->add_section( 'emc_hp_counters', array(

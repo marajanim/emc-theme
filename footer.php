@@ -57,6 +57,59 @@ $col3_links = emc_parse_footer_links( $col3_links_raw );
 <?php /* Skip native footer when Elementor Pro theme builder provides one. */ ?>
 <?php if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'footer' ) ) : ?>
 
+<?php
+// ── App Download Strip ────────────────────────────────────────────────────
+$ios_url     = emc_option( 'emc_ios_app_url',     '#' );
+$android_url = emc_option( 'emc_android_app_url', '#' );
+$show_app    = ( $ios_url !== '#' || $android_url !== '#' );
+
+// Platform detection via User-Agent
+$ua          = $_SERVER['HTTP_USER_AGENT'] ?? '';
+$is_ios      = (bool) preg_match( '/iPhone|iPad|iPod/i', $ua );
+$is_android  = (bool) preg_match( '/Android/i', $ua );
+$show_ios    = ! $is_android; // show on iOS + desktop
+$show_android = ! $is_ios;   // show on Android + desktop
+
+if ( $show_app ) :
+?>
+<div class="app-download-strip" aria-label="<?php esc_attr_e( 'Download our app', 'emc-theme' ); ?>">
+    <div class="container app-download-inner">
+        <div class="app-download-text">
+            <h3><?php esc_html_e( 'Get the EMC App', 'emc-theme' ); ?></h3>
+            <p><?php esc_html_e( 'Prayer times, events, news & more — right on your phone.', 'emc-theme' ); ?></p>
+        </div>
+        <div class="app-download-badges">
+            <?php if ( $show_ios && $ios_url ) : ?>
+            <a href="<?php echo esc_url( $ios_url ); ?>"
+               class="app-badge"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="<?php esc_attr_e( 'Download on the App Store', 'emc-theme' ); ?>">
+                <span class="app-badge-icon" aria-hidden="true"><i class="fab fa-apple"></i></span>
+                <span class="app-badge-text">
+                    <span class="app-badge-sub"><?php esc_html_e( 'Download on the', 'emc-theme' ); ?></span>
+                    <span class="app-badge-name"><?php esc_html_e( 'App Store', 'emc-theme' ); ?></span>
+                </span>
+            </a>
+            <?php endif; ?>
+            <?php if ( $show_android && $android_url ) : ?>
+            <a href="<?php echo esc_url( $android_url ); ?>"
+               class="app-badge"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="<?php esc_attr_e( 'Get it on Google Play', 'emc-theme' ); ?>">
+                <span class="app-badge-icon" aria-hidden="true"><i class="fab fa-google-play"></i></span>
+                <span class="app-badge-text">
+                    <span class="app-badge-sub"><?php esc_html_e( 'Get it on', 'emc-theme' ); ?></span>
+                    <span class="app-badge-name"><?php esc_html_e( 'Google Play', 'emc-theme' ); ?></span>
+                </span>
+            </a>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php /* ── Main Footer ──────────────────────────────────────────────────── */ ?>
 <footer class="site-footer" aria-label="<?php esc_attr_e( 'Site footer', 'emc-theme' ); ?>">
 
