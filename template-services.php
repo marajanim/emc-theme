@@ -12,6 +12,16 @@
 get_header();
 
 wp_enqueue_style( 'emc-page-services', EMC_ASSETS . '/css/services.css', array( 'emc-style' ), EMC_VERSION );
+
+// Resolve common URLs once so all sections can reference them
+$events_page  = get_page_by_path( 'events' );
+$events_url   = $events_page ? get_permalink( $events_page ) : home_url( '/events/' );
+$contact_page = get_page_by_path( 'contact' );
+$contact_url  = $contact_page ? get_permalink( $contact_page ) : home_url( '/contact/' );
+$prayer_page  = get_page_by_path( 'prayer-times' );
+$prayer_url   = $prayer_page ? get_permalink( $prayer_page ) : home_url( '/prayer-times/' );
+$about_page   = get_page_by_path( 'about' );
+$about_url    = $about_page ? get_permalink( $about_page ) : home_url( '/about/' );
 ?>
 
 <!-- Hero -->
@@ -90,10 +100,6 @@ wp_enqueue_style( 'emc-page-services', EMC_ASSETS . '/css/services.css', array( 
                     <?php endfor; ?>
                 </div>
 
-                <?php
-                $prayer_page = get_page_by_path( 'prayer-times' );
-                $prayer_url  = $prayer_page ? get_permalink( $prayer_page ) : home_url( '/prayer-times/' );
-                ?>
                 <a href="<?php echo esc_url( $prayer_url ); ?>" class="btn btn-primary" style="margin-top:2rem;">
                     <i class="fas fa-clock"></i> <?php esc_html_e( 'View Full Prayer Times', 'emc-theme' ); ?>
                 </a>
@@ -151,10 +157,6 @@ wp_enqueue_style( 'emc-page-services', EMC_ASSETS . '/css/services.css', array( 
                 </div>
 
                 <div class="service-cta-group">
-                    <?php
-                    $events_page = get_page_by_path( 'events' );
-                    $events_url  = $events_page ? get_permalink( $events_page ) : home_url( '/events/' );
-                    ?>
                     <a href="<?php echo esc_url( $events_url ); ?>" class="btn btn-primary"><?php esc_html_e( 'View Youth Events', 'emc-theme' ); ?></a>
                     <a href="mailto:<?php echo esc_attr( emc_option( 'emc_admin_email', 'admin@essexmuslimcentre.org' ) ); ?>?subject=<?php echo esc_attr( rawurlencode( 'Youth Programme Enquiry' ) ); ?>" class="btn btn-outline"><?php esc_html_e( 'Enquire', 'emc-theme' ); ?></a>
                 </div>
@@ -254,11 +256,6 @@ wp_enqueue_style( 'emc-page-services', EMC_ASSETS . '/css/services.css', array( 
                 </div>
 
                 <div class="service-cta-group" style="margin-top:2rem;">
-                    <?php
-                    $contact_page = get_page_by_path( 'contact' );
-                    $contact_url  = $contact_page ? get_permalink( $contact_page ) : home_url( '/contact/' );
-                    $events_url   = $events_page ? get_permalink( $events_page ) : home_url( '/events/' );
-                    ?>
                     <a href="<?php echo esc_url( $events_url ); ?>" class="btn btn-primary"><?php esc_html_e( 'View Wellbeing Events', 'emc-theme' ); ?></a>
                     <a href="<?php echo esc_url( $contact_url ); ?>" class="btn btn-outline"><?php esc_html_e( 'Get Support', 'emc-theme' ); ?></a>
                 </div>
@@ -277,10 +274,6 @@ wp_enqueue_style( 'emc-page-services', EMC_ASSETS . '/css/services.css', array( 
             </div>
             <div class="svc-cta-actions">
                 <?php echo emc_donate_button( __( 'Donate Now', 'emc-theme' ) ); ?>
-                <?php
-                $about_page = get_page_by_path( 'about' );
-                $about_url  = $about_page ? get_permalink( $about_page ) : home_url( '/about/' );
-                ?>
                 <a href="<?php echo esc_url( $about_url ); ?>#vacancies" class="btn btn-outline"><?php esc_html_e( 'Volunteer', 'emc-theme' ); ?></a>
             </div>
         </div>

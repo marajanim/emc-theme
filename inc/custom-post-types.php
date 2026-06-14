@@ -30,12 +30,12 @@ function emc_register_post_types() {
     register_post_type( 'emc_service', array(
         'labels'        => emc_cpt_labels( 'Services', 'Service', 'Add New Service' ),
         'public'        => true,
-        'has_archive'   => true,
+        'has_archive'   => 'all-services',   // archive at /all-services/ — avoids hijacking /services/ static page
         'menu_icon'     => 'dashicons-heart',
         'menu_position' => 6,
         'supports'      => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
         'show_in_rest'  => true,
-        'rewrite'       => array( 'slug' => 'services' ),
+        'rewrite'       => array( 'slug' => 'service' ),  // singular: /service/my-service/
     ) );
 
     // ── 3. Team Members ───────────────────────────────────────────────────
