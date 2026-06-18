@@ -603,3 +603,196 @@
 @media (max-width: 1100px) { .evt-single-layout { grid-template-columns: 1fr 300px; gap: 2rem; } .evt-related-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 900px) { .evt-single-layout { grid-template-columns: 1fr; } .evt-single-sidebar { position: static; } }
 @media (max-width: 640px) { .evt-related-grid { grid-template-columns: 1fr; } .evt-single-hero { text-align: left; } .evt-single-hero-meta,.evt-single-breadcrumb { justify-content: flex-start; } }
+
+/* ==========================================================================
+   ARCHIVE EVENT CARDS  (archive-emc_event.php)
+   ========================================================================== */
+
+.archive-section-heading {
+    font-size: var(--step-2);
+    color: var(--deep-blue);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.archive-section-heading i { color: var(--primary-green); }
+.archive-section-heading--past { color: var(--text-muted); }
+
+/* Filter bar */
+.archive-filter-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 72px;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.filter-tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.75rem 0;
+}
+
+.filter-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    border: 1.5px solid var(--border-color);
+    background: var(--light-bg);
+    transition: all var(--trans-fast);
+    white-space: nowrap;
+}
+
+.filter-tab:hover { color: var(--primary-green); border-color: var(--primary-green); }
+.filter-tab.active { background: var(--primary-green); border-color: var(--primary-green); color: var(--white); }
+
+/* Cards grid */
+.event-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 1.75rem;
+    margin-bottom: 3rem;
+}
+
+/* Individual card */
+.event-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    transition: transform var(--trans-normal), box-shadow var(--trans-normal);
+    animation: evtCardIn 0.5s ease forwards;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+}
+
+.event-card.event-card--past { opacity: 0.72; }
+.event-card.event-card--past:hover { opacity: 1; }
+
+/* Card image */
+.event-card-img {
+    display: block;
+    overflow: hidden;
+    max-height: 200px;
+}
+
+.event-card-img img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--trans-normal);
+}
+
+.event-card:hover .event-card-img img { transform: scale(1.04); }
+
+/* Card body */
+.event-card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex-grow: 1;
+}
+
+.event-cat-label {
+    display: inline-block;
+    font-size: var(--step--2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary-green);
+}
+
+.event-date-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.event-date-chip.upcoming { color: var(--primary-green); }
+.event-date-chip.upcoming i { color: var(--primary-green); }
+.event-date-chip.past { color: var(--text-muted); text-decoration: line-through; }
+
+.event-card-body h3 {
+    font-size: var(--step-1);
+    color: var(--deep-blue);
+    margin: 0;
+    line-height: 1.35;
+}
+
+.event-card-body h3 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--trans-fast);
+}
+
+.event-card:hover .event-card-body h3 a { color: var(--primary-green); }
+
+.event-card-body p {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin: 0;
+}
+
+.event-venue {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--step--2);
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.event-venue i { color: var(--primary-green); flex-shrink: 0; }
+
+.event-card-body .btn { margin-top: auto; align-self: flex-start; }
+
+/* No results */
+.archive-no-results {
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--text-muted);
+}
+
+.archive-no-results i {
+    font-size: 3.5rem;
+    opacity: 0.25;
+    display: block;
+    margin-bottom: 1.25rem;
+    color: var(--primary-green);
+}
+
+.archive-no-results h2 { color: var(--deep-blue); margin-bottom: 0.75rem; }
+
+@media (max-width: 768px) {
+    .event-cards-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .filter-tabs { gap: 0.4rem; }
+    .filter-tab { padding: 0.4rem 0.9rem; font-size: var(--step--2); }
+}

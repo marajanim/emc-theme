@@ -7,6 +7,8 @@
 
 get_header();
 
+wp_enqueue_style( 'emc-page-events', EMC_ASSETS . '/css/events.css', array( 'emc-style' ), EMC_VERSION );
+
 $heading    = emc_option( 'emc_events_heading',    __( 'Events & Programmes', 'emc-theme' ) );
 $subheading = emc_option( 'emc_events_subheading', __( 'What\'s On', 'emc-theme' ) );
 $today      = current_time( 'Y-m-d' );
