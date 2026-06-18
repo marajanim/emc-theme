@@ -446,6 +446,43 @@ function emc_register_acf_fields() {
     ) );
 
     /* ======================================================================
+       EVENT SINGLE POST (emc_event CPT)
+       ====================================================================== */
+    acf_add_local_field_group( array(
+        'key'      => 'group_emc_event_single',
+        'title'    => 'Event Details (Extra Content)',
+        'location' => array( array( array(
+            'param'    => 'post_type',
+            'operator' => '==',
+            'value'    => 'emc_event',
+        ) ) ),
+        'menu_order' => 1,
+        'position'   => 'normal',
+        'style'      => 'default',
+        'fields'     => array_merge(
+            emc_acf_section( 'Event Intro', 'evt_single_intro', array(
+                emc_acf_textarea( 'evt_single_intro', 'Intro Paragraph (shown above content)', '' ),
+            ) ),
+            emc_acf_section( 'Key Highlights', 'evt_single_highlights', array_merge(
+                array(
+                    emc_acf_text( 'evt_single_highlights_heading', 'Highlights Heading', 'Event Highlights' ),
+                ),
+                emc_acf_numbered_items( 'evt_highlight', 4, array(
+                    'icon'  => array( 'Icon (FontAwesome class)', 'fas fa-check-circle' ),
+                    'title' => array( 'Title', '' ),
+                    'desc'  => array( 'Description', '' ),
+                ) )
+            ) ),
+            emc_acf_section( 'Sidebar CTA', 'evt_single_cta', array(
+                emc_acf_text( 'evt_single_cta_heading',   'CTA Heading',  'Join This Event' ),
+                emc_acf_textarea( 'evt_single_cta_desc',  'CTA Text',     'All are welcome. Contact us for more information.' ),
+                emc_acf_text( 'evt_single_cta_btn_label', 'Button Label', 'Get in Touch' ),
+                emc_acf_text( 'evt_single_cta_btn_url',   'Button URL',   '/contact/' ),
+            ) )
+        ),
+    ) );
+
+    /* ======================================================================
        SERVICE SINGLE POST (emc_service CPT)
        ====================================================================== */
     acf_add_local_field_group( array(

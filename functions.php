@@ -577,6 +577,234 @@ add_action( 'init', 'emc_auto_seed_services', 20 );
 
 
 /* ==========================================================================
+   5c. Auto-seed Event Posts
+   Creates 6 core emc_event posts automatically on first theme load.
+   ========================================================================== */
+function emc_auto_seed_events() {
+
+    if ( get_option( 'emc_events_seeded' ) ) {
+        return;
+    }
+
+    $events = array(
+        array(
+            'title'    => 'Friday Prayer (Jumu\'ah)',
+            'slug'     => 'friday-prayer-jumuah',
+            'excerpt'  => 'Weekly congregational Friday prayers with Khutbah. Two sessions available — all are welcome.',
+            'category' => 'religious',
+            'date'     => '2026-06-20',
+            'end_date' => '',
+            'time'     => '12:30 PM – 2:00 PM',
+            'venue'    => 'Main Hall, EMC Centre',
+            'capacity' => '',
+            'reg_link' => '',
+            'content'  => '<h2>Friday Prayer at Essex Muslim Centre</h2>
+<p>Join us every Friday for Jumu\'ah (Friday congregational prayer). Two sessions are held to accommodate our growing community. The Khutbah (sermon) is delivered in English to ensure everyone can benefit.</p>
+<h3>Session Times</h3>
+<ul>
+<li><strong>First Khutbah:</strong> 12:30 PM — Prayer begins approximately 1:00 PM</li>
+<li><strong>Second Khutbah:</strong> 1:30 PM — Prayer begins approximately 2:00 PM</li>
+<li><strong>Gates open:</strong> From 12:00 PM</li>
+</ul>
+<h3>Facilities</h3>
+<ul>
+<li>Separate sisters\' prayer area with full audio</li>
+<li>Wudu (ablution) facilities for brothers and sisters</li>
+<li>Accessible entrance for wheelchair users</li>
+<li>Free parking nearby</li>
+</ul>
+<h3>Location</h3>
+<p>Essex Muslim Centre, Victoria Road, Chelmsford, CM1 1LW. The main hall entrance is on Victoria Road. Overflow into the side hall when required.</p>',
+        ),
+        array(
+            'title'    => 'Arabic Education Open Day',
+            'slug'     => 'arabic-education-open-day',
+            'excerpt'  => 'Come and see our Arabic and Quran classes in action. Meet the teachers and register your child for the new term.',
+            'category' => 'community',
+            'date'     => '2026-07-15',
+            'end_date' => '',
+            'time'     => '10:00 AM – 1:00 PM',
+            'venue'    => 'EMC Centre, Chelmsford',
+            'capacity' => '',
+            'reg_link' => '',
+            'content'  => '<h2>Arabic Education Open Day</h2>
+<p>Our annual Open Day gives families the opportunity to see our Arabic and Islamic education classes first-hand, speak to teachers, and register for the new academic term starting in September.</p>
+<h3>What to Expect</h3>
+<ul>
+<li>Tours of classrooms and learning facilities</li>
+<li>Sample lessons for children of all ages</li>
+<li>Meet our qualified teachers and ask questions</li>
+<li>Register for Weekend Madrasah, Quran, and Arabic classes</li>
+<li>Refreshments provided</li>
+</ul>
+<h3>Who Is It For?</h3>
+<p>Open to all families — whether you are enrolling for the first time or returning for another year. Children aged 5 and above are welcome. Adult Arabic classes will also be showcased.</p>
+<h3>How to Attend</h3>
+<p>No booking required — simply arrive at the EMC Centre between 10:00 AM and 1:00 PM. Free entry for all.</p>',
+        ),
+        array(
+            'title'    => 'Youth Sports Day 2026',
+            'slug'     => 'youth-sports-day-2026',
+            'excerpt'  => 'A fun-filled outdoor sports day for young people aged 8–18. Football, cricket, and more activities for the whole family.',
+            'category' => 'youth',
+            'date'     => '2026-07-26',
+            'end_date' => '',
+            'time'     => '10:00 AM – 3:00 PM',
+            'venue'    => 'Chelmsford Sports Ground',
+            'capacity' => '',
+            'reg_link' => '',
+            'content'  => '<h2>EMC Youth Sports Day 2026</h2>
+<p>An action-packed day of outdoor sports and activities for young people in our community. This is a fantastic opportunity to get active, make new friends, and enjoy a fun day out in a safe and welcoming environment.</p>
+<h3>Activities</h3>
+<ul>
+<li><strong>Football Tournament:</strong> 5-a-side teams, ages 10–18</li>
+<li><strong>Cricket:</strong> Friendly matches and coaching sessions</li>
+<li><strong>Athletics:</strong> Sprint races and field events for younger children</li>
+<li><strong>Family Fun Zone:</strong> Tug-of-war, sack races, and more</li>
+<li><strong>Food &amp; Refreshments:</strong> Halal BBQ and snacks available</li>
+</ul>
+<h3>Who Can Come?</h3>
+<p>Young people aged 8–18, accompanied by family members. Parents and guardians are welcome to watch and join in the family activities. Free entry for all attendees.</p>',
+        ),
+        array(
+            'title'    => 'Annual Fundraising Dinner 2026',
+            'slug'     => 'annual-fundraising-dinner-2026',
+            'excerpt'  => 'An elegant three-course fundraising dinner in support of our building campaign. Guest speakers and live auction.',
+            'category' => 'fundraising',
+            'date'     => '2026-08-15',
+            'end_date' => '',
+            'time'     => '7:00 PM – 10:30 PM',
+            'venue'    => 'Park Inn by Radisson, Chelmsford',
+            'capacity' => '200',
+            'reg_link' => '',
+            'content'  => '<h2>EMC Annual Fundraising Dinner 2026</h2>
+<p>Join us for our flagship annual fundraising evening in support of the "Be One of the 313" building campaign. This prestigious event brings together community members, supporters, and dignitaries for a wonderful evening of dining and giving.</p>
+<h3>Evening Programme</h3>
+<ul>
+<li><strong>7:00 PM:</strong> Registration &amp; Welcome Reception</li>
+<li><strong>7:30 PM:</strong> Three-Course Halal Dinner</li>
+<li><strong>8:30 PM:</strong> Guest Speakers &amp; Building Campaign Update</li>
+<li><strong>9:15 PM:</strong> Live Fundraising Auction</li>
+<li><strong>10:00 PM:</strong> Du\'a &amp; Close</li>
+</ul>
+<h3>Tickets</h3>
+<p>Tickets are £35 per person, tables of 10 available at £300. All proceeds go directly to the EMC building fund. Contact our office to reserve your place or table.</p>
+<h3>Dress Code</h3>
+<p>Smart/semi-formal. Brothers in suits, sisters in modest formal attire.</p>',
+        ),
+        array(
+            'title'    => 'Community Support Services Day',
+            'slug'     => 'community-support-services-day',
+            'excerpt'  => 'Free welfare support, signposting, and Zakat distribution for community members in need. Confidential appointments available.',
+            'category' => 'community',
+            'date'     => '2026-07-12',
+            'end_date' => '',
+            'time'     => '10:00 AM – 4:00 PM',
+            'venue'    => 'EMC Centre, Chelmsford',
+            'capacity' => '',
+            'reg_link' => '',
+            'content'  => '<h2>Community Support Services Day</h2>
+<p>Our quarterly Community Support Day brings together welfare officers, volunteers, and partner organisations to provide free support, guidance, and referrals to community members in need.</p>
+<h3>Services Available on the Day</h3>
+<ul>
+<li><strong>Welfare Assessment:</strong> Speak confidentially with our welfare officer about financial hardship, housing, or family support</li>
+<li><strong>Zakat &amp; Sadaqah Distribution:</strong> Applications for emergency Zakat support</li>
+<li><strong>Food Bank:</strong> Emergency food parcels available for qualifying families</li>
+<li><strong>Benefits Advice:</strong> Help with Universal Credit, PIP applications, and entitlement checks</li>
+<li><strong>Mental Health Signposting:</strong> Referrals to appropriate support services</li>
+<li><strong>New Muslim Support:</strong> Resources and guidance for those who have recently embraced Islam</li>
+</ul>
+<h3>Confidentiality</h3>
+<p>All consultations are strictly confidential. You do not need to make an appointment — simply arrive at any point during the day and speak to a member of our team.</p>',
+        ),
+        array(
+            'title'    => 'Eid ul-Adha Celebration 2026',
+            'slug'     => 'eid-ul-adha-celebration-2026',
+            'excerpt'  => 'Celebrate Eid ul-Adha with prayers, a community feast, children\'s activities, and a joyful atmosphere for the whole family.',
+            'category' => 'religious',
+            'date'     => '2026-06-28',
+            'end_date' => '',
+            'time'     => '8:00 AM – 2:00 PM',
+            'venue'    => 'EMC Centre & Car Park, Chelmsford',
+            'capacity' => '',
+            'reg_link' => '',
+            'content'  => '<h2>Eid ul-Adha Celebration at EMC</h2>
+<p>Come together as a community to celebrate the blessed occasion of Eid ul-Adha. After Eid prayers, join us for a day of community celebrations, food, and activities for all ages.</p>
+<h3>Programme</h3>
+<ul>
+<li><strong>8:00 AM:</strong> First Eid Prayer</li>
+<li><strong>9:15 AM:</strong> Second Eid Prayer</li>
+<li><strong>10:00 AM:</strong> Community Feast &amp; Refreshments</li>
+<li><strong>10:30 AM – 2:00 PM:</strong> Children\'s Activities, Games &amp; Stalls</li>
+<li><strong>Throughout the Day:</strong> Face painting, bouncy castle, and family fun</li>
+</ul>
+<h3>All Are Welcome</h3>
+<p>Eid is a time for community and celebration. Non-Muslim friends, neighbours, and colleagues are warmly invited to join the festivities after prayers. No booking required.</p>
+<h3>Udhiyah (Qurbani)</h3>
+<p>Qurbani orders can be placed through the office prior to Eid. Meat distribution will take place after prayers.</p>',
+        ),
+    );
+
+    $all_done = true;
+
+    // Ensure event_category taxonomy terms exist
+    $tax_map = array(
+        'religious'   => 'Religious',
+        'community'   => 'Community',
+        'youth'       => 'Youth',
+        'fundraising' => 'Fundraising',
+    );
+    foreach ( $tax_map as $slug => $name ) {
+        if ( ! term_exists( $slug, 'event_category' ) ) {
+            wp_insert_term( $name, 'event_category', array( 'slug' => $slug ) );
+        }
+    }
+
+    foreach ( $events as $evt ) {
+        $existing = get_page_by_path( $evt['slug'], OBJECT, 'emc_event' );
+        if ( $existing ) {
+            continue;
+        }
+
+        $post_id = wp_insert_post( array(
+            'post_type'    => 'emc_event',
+            'post_title'   => $evt['title'],
+            'post_name'    => $evt['slug'],
+            'post_content' => $evt['content'],
+            'post_excerpt' => $evt['excerpt'],
+            'post_status'  => 'publish',
+        ) );
+
+        if ( $post_id && ! is_wp_error( $post_id ) ) {
+            update_post_meta( $post_id, '_emc_event_date',     $evt['date'] );
+            update_post_meta( $post_id, '_emc_event_end_date', $evt['end_date'] );
+            update_post_meta( $post_id, '_emc_event_time',     $evt['time'] );
+            update_post_meta( $post_id, '_emc_event_venue',    $evt['venue'] );
+            update_post_meta( $post_id, '_emc_event_location', $evt['venue'] ); // alias used in events list
+            update_post_meta( $post_id, '_emc_event_category', $evt['category'] );
+            update_post_meta( $post_id, '_emc_event_capacity', $evt['capacity'] );
+            update_post_meta( $post_id, '_emc_event_reg_link', $evt['reg_link'] );
+            update_post_meta( $post_id, '_emc_event_featured', '1' );
+
+            // Assign taxonomy term
+            $term = get_term_by( 'slug', $evt['category'], 'event_category' );
+            if ( $term ) {
+                wp_set_post_terms( $post_id, array( $term->term_id ), 'event_category' );
+            }
+        } else {
+            $all_done = false;
+        }
+    }
+
+    flush_rewrite_rules( false );
+
+    if ( $all_done ) {
+        update_option( 'emc_events_seeded', '1' );
+    }
+}
+add_action( 'init', 'emc_auto_seed_events', 21 );
+
+/* ==========================================================================
    6. Body Classes
    ========================================================================== */
 function emc_body_classes( $classes ) {
