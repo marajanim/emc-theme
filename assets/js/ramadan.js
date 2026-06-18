@@ -61,54 +61,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* =====================
        Ramadan Schedule Calculator
+       Uses selectors that match the actual template HTML
        ===================== */
-    const periodOptions = document.querySelectorAll('input[name="r-period"]');
-    const amountBtns = document.querySelectorAll('.giving-form-col .amount-btn');
-    const customInput = document.getElementById('r-custom-amount');
+    const amountBtns  = document.querySelectorAll('.ramadan-form-col .amount-btn');
+    const customInput = document.getElementById('ramadan-custom-input');
+    const rmTotal     = document.getElementById('rm-total');
 
-    const sumDaily  = document.getElementById('sum-daily');
-    const sumPeriod = document.getElementById('sum-period');
-    const sumTotal  = document.getElementById('sum-total');
-
-    let currentDays = 30;
+    let currentDays   = 30;
     let currentAmount = 3;
 
     function getSelectedAmount() {
-        const activeBtn = document.querySelector('.giving-form-col .amount-btn.active');
-        if (!activeBtn) return 3;
+        const activeBtn = document.querySelector('.ramadan-form-col .amount-btn.active');
+        if (!activeBtn) return currentAmount;
         if (activeBtn.classList.contains('custom-other')) {
-            return parseFloat(customInput?.value || 3);
+            return parseFloat(customInput?.value) || 0;
         }
-        return parseFloat(activeBtn.textContent.replace('£', '')) || 3;
+        return parseFloat(activeBtn.dataset.amount) || 3;
     }
 
     function updateSummary() {
         currentAmount = getSelectedAmount();
-        const total = currentAmount * currentDays;
-        if (sumDaily)  sumDaily.textContent  = `£${currentAmount}`;
-        if (sumTotal)  sumTotal.textContent  = `£${total}`;
+        const total   = currentAmount * currentDays;
+
+        if (rmTotal) {
+            rmTotal.innerHTML = `£${total.toFixed(2)} <span>(${currentDays} × £${currentAmount.toFixed(2)})</span>`;
+        }
 
         const submitBtn = document.getElementById('ramadan-submit');
         if (submitBtn) {
-            submitBtn.innerHTML = `<i class="fas fa-moon"></i> Schedule Giving — £${total} total`;
+            submitBtn.innerHTML = `<i class="fas fa-moon"></i> Schedule Giving — £${total.toFixed(2)} total`;
         }
     }
 
-    periodOptions.forEach(radio => {
+    // Period radios
+    document.querySelectorAll('input[name="rmperiod"]').forEach(radio => {
         radio.addEventListener('change', () => {
-            const parent = radio.closest('.period-option');
-            currentDays = parseInt(parent?.dataset.days || 30);
-            const label  = parent?.dataset.label || '';
-            if (sumPeriod) sumPeriod.textContent = label;
+            currentDays = parseInt(radio.value) || 30;
             updateSummary();
         });
     });
 
+    // Amount buttons
     amountBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             amountBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const customWrapper = document.querySelector('.giving-form-col .custom-amount-wrapper');
+            const customWrapper = document.getElementById('ramadan-custom-wrapper');
             if (btn.classList.contains('custom-other')) {
                 if (customWrapper) customWrapper.style.display = 'block';
             } else {
@@ -121,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (customInput) customInput.addEventListener('input', updateSummary);
 
     updateSummary();
+
 
     /* =====================
        Stripe — Schedule My Ramadan Giving

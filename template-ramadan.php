@@ -276,46 +276,8 @@ $donate_url = get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donat
     ramadanCountdown();
     setInterval( ramadanCountdown, 1000 );
 
-    // ── Giving scheduler total ─────────────────────────────────────────────
-    var daily  = 3;
-    var period = 30;
-
-    function updateTotal() {
-        var total   = daily * period;
-        var summary = document.getElementById('rm-total');
-        if ( summary ) {
-            summary.innerHTML = '£' + total.toFixed(2) + ' <span>(' + period + ' × £' + daily.toFixed(2) + ')</span>';
-        }
-    }
-
-    document.querySelectorAll('.amount-btn').forEach( function(btn) {
-        btn.addEventListener('click', function() {
-            if ( this.classList.contains('custom-other') ) {
-                var w = document.getElementById('ramadan-custom-wrapper');
-                if (w) w.style.display = 'block';
-                return;
-            }
-            document.querySelectorAll('.amount-btn').forEach(function(b){ b.classList.remove('active'); });
-            this.classList.add('active');
-            daily = parseFloat( this.dataset.amount ) || 3;
-            updateTotal();
-        });
-    });
-
-    var customIn = document.getElementById('ramadan-custom-input');
-    if ( customIn ) {
-        customIn.addEventListener('input', function() {
-            daily = parseFloat(this.value) || 0;
-            updateTotal();
-        });
-    }
-
-    document.querySelectorAll('input[name="rmperiod"]').forEach( function(radio) {
-        radio.addEventListener('change', function() {
-            period = parseInt( this.value ) || 30;
-            updateTotal();
-        });
-    });
+    // ── Giving scheduler totals are handled by ramadan.js ─────────────────
+    // (amount buttons, period radios, and #rm-total updates live in ramadan.js)
 
     // ── Fitrana ────────────────────────────────────────────────────────────
     function calcFitrana() {
