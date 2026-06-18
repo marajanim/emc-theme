@@ -388,7 +388,8 @@ $emc_includes = array(
     '/inc/acf-helpers.php',         // ACF wrapper (emc_acf, emc_acf_image) with fallback
     '/inc/acf-fields.php',          // ACF field group definitions for page templates
     '/inc/shortcodes.php',          // Shortcodes (prayer times, campaign bar, etc.)
-    '/inc/ajax-handlers.php',       // AJAX handlers (newsletter, contact form)
+    '/inc/ajax-handlers.php',       // AJAX handlers (newsletter, contact form, Stripe donations)
+    '/inc/stripe-settings.php',     // WP Admin settings page for Stripe API keys
     '/inc/elementor-compat.php',    // Elementor compatibility (locations, style fixes)
     '/inc/elementor-widgets.php',   // Custom Elementor widgets (donate, prayer, counter)
     // Phase 11 — Demo Import System

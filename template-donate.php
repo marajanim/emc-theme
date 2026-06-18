@@ -14,9 +14,24 @@ get_header();
 wp_enqueue_style( 'emc-page-donate',  EMC_ASSETS . '/css/donate.css',  array( 'emc-style' ), EMC_VERSION );
 wp_enqueue_style( 'emc-page-ramadan', EMC_ASSETS . '/css/ramadan.css', array( 'emc-style' ), EMC_VERSION );
 
+// Stripe.js — must load from js.stripe.com for PCI compliance
+wp_register_script( 'stripe-js', 'https://js.stripe.com/v3/', array(), null, true );
+wp_enqueue_script( 'stripe-js' );
+
 $donate_js_path = EMC_DIR . '/assets/js/donate.js';
 if ( file_exists( $donate_js_path ) ) {
-    wp_enqueue_script( 'emc-page-donate', EMC_ASSETS . '/js/donate.js', array( 'emc-script' ), filemtime( $donate_js_path ), true );
+    wp_enqueue_script(
+        'emc-page-donate',
+        EMC_ASSETS . '/js/donate.js',
+        array( 'emc-script', 'stripe-js' ),
+        filemtime( $donate_js_path ),
+        true
+    );
+    wp_localize_script( 'emc-page-donate', 'emcStripeConfig', array(
+        'publishableKey' => emc_stripe_pub_key(),
+        'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+        'nonce'          => wp_create_nonce( 'emc_donate_nonce' ),
+    ) );
 }
 ?>
 
