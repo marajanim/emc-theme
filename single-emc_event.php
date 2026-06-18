@@ -23,7 +23,8 @@
 
 get_header();
 
-wp_enqueue_style( 'emc-page-events', EMC_ASSETS . '/css/events.css', array( 'emc-style' ), EMC_VERSION );
+wp_enqueue_style( 'emc-page-events',    EMC_ASSETS . '/css/events.css',    array( 'emc-style' ), EMC_VERSION );
+wp_enqueue_style( 'emc-page-services',  EMC_ASSETS . '/css/services.css',  array( 'emc-style', 'emc-page-events' ), EMC_VERSION );
 
 while ( have_posts() ) :
     the_post();

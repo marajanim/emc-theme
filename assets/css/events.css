@@ -796,3 +796,142 @@
     .filter-tabs { gap: 0.4rem; }
     .filter-tab { padding: 0.4rem 0.9rem; font-size: var(--step--2); }
 }
+
+/* ==========================================================================
+   EVENT SINGLE PAGE — Overrides & Polish
+   ========================================================================== */
+
+/* Hide the duplicated H2 title at top of WP content
+   (the hero already shows the_title(), the seeded content opens with <h2> too) */
+.evt-single-content .svc-prose > h2:first-child {
+    display: none;
+}
+
+/* Prose typography overrides for event pages */
+.evt-single-content .svc-prose {
+    font-size: var(--step-0);
+    line-height: 1.85;
+    color: var(--text-main);
+}
+
+.evt-single-content .svc-prose h2 {
+    font-size: var(--step-2);
+    color: var(--deep-blue);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.evt-single-content .svc-prose h3 {
+    font-size: var(--step-1);
+    color: var(--deep-blue);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.evt-single-content .svc-prose p {
+    margin-bottom: 1.25rem;
+    color: var(--text-muted);
+}
+
+.evt-single-content .svc-prose ul {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.evt-single-content .svc-prose ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    padding-left: 0;
+}
+
+.evt-single-content .svc-prose ul li::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-green);
+    flex-shrink: 0;
+    margin-top: 0.6em;
+}
+
+.evt-single-content .svc-prose strong {
+    color: var(--deep-blue);
+    font-weight: 700;
+}
+
+/* Back link spacing */
+.svc-back-link {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Sidebar donate nudge — ensure it shows properly */
+.svc-donate-nudge {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.svc-donate-nudge i {
+    font-size: 1.75rem;
+    color: var(--accent-gold);
+}
+
+.svc-donate-nudge strong {
+    display: block;
+    font-size: var(--step-0);
+    color: var(--deep-blue);
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.svc-donate-nudge p {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Full-width button helper */
+.btn-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+/* -- Mobile responsive fixes ----------------------------------------------- */
+@media (max-width: 900px) {
+    .evt-single-layout  { grid-template-columns: 1fr; }
+    .evt-single-sidebar { position: static; top: auto; }
+    .evt-single-content .svc-prose h2 { font-size: var(--step-1); }
+    .evt-single-content .svc-prose h3 { font-size: var(--step-0); }
+}
+
+@media (max-width: 640px) {
+    .evt-single-hero h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); }
+    .evt-single-hero-meta { gap: 0.5rem; }
+    .evt-single-hero-meta span { font-size: var(--step--2); padding: 0.35rem 0.75rem; }
+    .evt-single-date-badge { padding: 0.75rem 1.25rem; }
+    .evt-badge-day { font-size: 2rem; }
+    .evt-details-card { padding: 1.5rem 1.25rem; }
+    .evt-single-body .container { padding-left: 1rem; padding-right: 1rem; }
+    .evt-single-content .svc-prose ul li { font-size: var(--step--1); }
+}
