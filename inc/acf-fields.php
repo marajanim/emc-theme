@@ -444,6 +444,47 @@ function emc_register_acf_fields() {
             ) )
         ),
     ) );
+
+    /* ======================================================================
+       SERVICE SINGLE POST (emc_service CPT)
+       ====================================================================== */
+    acf_add_local_field_group( array(
+        'key'      => 'group_emc_service_single',
+        'title'    => 'Service Details',
+        'location' => array( array( array(
+            'param'    => 'post_type',
+            'operator' => '==',
+            'value'    => 'emc_service',
+        ) ) ),
+        'menu_order' => 0,
+        'position'   => 'normal',
+        'style'      => 'default',
+        'fields'     => array_merge(
+            emc_acf_section( 'Hero', 'svc_single_hero', array(
+                emc_acf_text( 'svc_single_badge',      'Badge Text (e.g. Education, Welfare)', '' ),
+                emc_acf_image_field( 'svc_single_hero_image', 'Hero Background Image (optional)' ),
+            ) ),
+            emc_acf_section( 'Intro', 'svc_single_intro', array(
+                emc_acf_textarea( 'svc_single_intro', 'Intro Paragraph (shown above main content)', '' ),
+            ) ),
+            emc_acf_section( 'Key Highlights', 'svc_single_highlights', array_merge(
+                array(
+                    emc_acf_text( 'svc_single_highlights_heading', 'Highlights Section Heading', 'Key Highlights' ),
+                ),
+                emc_acf_numbered_items( 'svc_highlight', 6, array(
+                    'icon'  => array( 'Icon (FontAwesome class)', 'fas fa-check-circle' ),
+                    'title' => array( 'Title', '' ),
+                    'desc'  => array( 'Description', '' ),
+                ) )
+            ) ),
+            emc_acf_section( 'Sidebar CTA', 'svc_single_cta', array(
+                emc_acf_text( 'svc_single_cta_heading',   'CTA Heading',      'Get Involved' ),
+                emc_acf_textarea( 'svc_single_cta_desc',  'CTA Description',  'Interested in this service? We\'d love to hear from you.' ),
+                emc_acf_text( 'svc_single_cta_btn_label', 'Button Label',     'Contact Us' ),
+                emc_acf_text( 'svc_single_cta_btn_url',   'Button URL',       '/contact/' ),
+            ) )
+        ),
+    ) );
 }
 add_action( 'acf/init', 'emc_register_acf_fields' );
 
