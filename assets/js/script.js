@@ -19,6 +19,26 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Init
 
+    /* ── Position header directly below the prayer top bar ─────────────────
+       Uses real measured height so it works regardless of topbar content
+       changes (prayer data loading, font size, etc.)
+    ────────────────────────────────────────────────────────────────────── */
+    const topbar = document.getElementById('prayer-top-bar');
+
+    function positionHeader() {
+        if (!header) return;
+        const topbarH = (topbar && window.innerWidth > 768) ? topbar.offsetHeight : 0;
+        header.style.top = topbarH + 'px';
+        // Keep CSS custom property in sync for hero padding
+        document.documentElement.style.setProperty('--topbar-h', topbarH + 'px');
+    }
+
+    positionHeader();                                          // run on load
+    window.addEventListener('resize', positionHeader, { passive: true });
+    // Re-run after prayer JS populates the topbar (may change its height)
+    setTimeout(positionHeader, 800);
+    setTimeout(positionHeader, 2000);
+
     // Mobile Menu Toggle
     if (mobileToggle && mobileNav && closeToggle) {
         const toggleMenu = () => {
