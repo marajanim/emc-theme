@@ -817,17 +817,18 @@ textarea.form-control {
    Stripe Payment Modal
    ========================================================================== */
 .emc-stripe-modal {
+    display: none;               /* hidden by default — never blocks page clicks */
     position: fixed;
     inset: 0;
     z-index: 9999;
-    display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
     opacity: 0;
     transition: opacity 0.25s ease;
 }
-.emc-stripe-modal.is-open { opacity: 1; }
+.emc-stripe-modal.is-visible { display: flex; } /* shown by JS openModal() */
+.emc-stripe-modal.is-open    { opacity: 1; }
 
 .emc-stripe-modal-backdrop {
     position: absolute;
@@ -1022,7 +1023,7 @@ textarea.form-control {
 
 /* Mobile */
 @media (max-width: 480px) {
-    .emc-stripe-modal { padding: 0; align-items: flex-end; }
+    .emc-stripe-modal.is-visible { padding: 0; align-items: flex-end; }
     .emc-stripe-modal-card {
         border-radius: 20px 20px 0 0;
         max-height: 92vh;

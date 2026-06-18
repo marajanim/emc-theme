@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-label', 'Secure payment');
-    modal.hidden = true;
+    // modal starts hidden via CSS default (display:none — no is-visible class)
     modal.innerHTML = `
         <div class="emc-stripe-modal-backdrop"></div>
         <div class="emc-stripe-modal-card">
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Modal helpers ──────────────────────────────────────────────────────
     function openModal() {
-        modal.hidden = false;
+        modal.classList.add('is-visible');
         document.body.style.overflow = 'hidden';
         setTimeout(() => modal.classList.add('is-open'), 10);
     }
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('is-open');
         document.body.style.overflow = '';
         setTimeout(() => {
-            modal.hidden = true;
+            modal.classList.remove('is-visible');
             resetModal();
         }, 300);
     }
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close triggers
     modal.querySelector('.emc-stripe-modal-close').addEventListener('click', closeModal);
     modal.querySelector('.emc-stripe-modal-backdrop').addEventListener('click', closeModal);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-visible')) closeModal(); });
     document.getElementById('esm-success-close')?.addEventListener('click', closeModal);
 
     // ── Create PaymentIntent & mount Stripe Element ────────────────────────
