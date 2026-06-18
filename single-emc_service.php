@@ -92,7 +92,7 @@ while ( have_posts() ) :
         <h1 id="svc-single-heading"><?php the_title(); ?></h1>
 
         <?php if ( has_excerpt() ) : ?>
-        <p class="svc-single-tagline"><?php the_excerpt(); ?></p>
+        <p class="svc-single-tagline"><?php echo esc_html( get_the_excerpt() ); ?></p>
         <?php endif; ?>
 
         <nav class="svc-single-breadcrumb" aria-label="<?php esc_attr_e( 'Breadcrumb', 'emc-theme' ); ?>">
