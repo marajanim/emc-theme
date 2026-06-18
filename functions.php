@@ -409,6 +409,174 @@ foreach ( $emc_includes as $file ) {
 
 
 /* ==========================================================================
+   5b. Auto-seed Service Posts
+   Creates the 6 core emc_service posts automatically on first theme load.
+   Re-runs on any environment (local / Hostinger) where posts are missing.
+   ========================================================================== */
+function emc_auto_seed_services() {
+
+    // Skip if already seeded on this install
+    if ( get_option( 'emc_services_seeded' ) ) {
+        return;
+    }
+
+    $services = array(
+        array(
+            'title'   => 'Arabic Education',
+            'slug'    => 'arabic-education',
+            'icon'    => 'fas fa-book-open',
+            'excerpt' => 'Weekend Madrasah, Arabic classes, and Quran lessons for children and adults of all levels.',
+            'order'   => 1,
+            'content' => '<h2>About Our Arabic Education Programme</h2>
+<p>At Essex Muslim Centre, we believe that every Muslim should have the opportunity to connect with the Quran and Islamic teachings in their original language. Our Arabic Education programme serves children and adults across Chelmsford and Essex.</p>
+<h3>What We Offer</h3>
+<ul>
+<li><strong>Weekend Madrasah (Ages 5–16):</strong> Saturday and Sunday classes covering Quran recitation with Tajweed, Islamic Studies, Arabic language, and Seerah.</li>
+<li><strong>Adult Arabic Classes:</strong> Beginner to advanced conversational and classical Arabic, taught in small groups by qualified instructors.</li>
+<li><strong>Quran Memorisation (Hifz):</strong> Structured programme for dedicated students with individual mentor support.</li>
+<li><strong>Quran Recitation &amp; Tajweed:</strong> Perfecting pronunciation and application of Tajweed rules for all ages.</li>
+</ul>
+<h3>Timings</h3>
+<p>Weekend classes run Saturday and Sunday mornings. Adult classes are available on weekday evenings. Contact us for the current timetable.</p>
+<h3>How to Enrol</h3>
+<p>Registration is open at the beginning of each term. Contact our office or visit the centre to pick up a registration form. Subsidised rates are available for families in financial need.</p>',
+        ),
+        array(
+            'title'   => 'Nikah (Marriage)',
+            'slug'    => 'nikah-marriage',
+            'icon'    => 'fas fa-ring',
+            'excerpt' => 'Islamic marriage ceremonies conducted by our Imam with pre-marriage guidance and support.',
+            'order'   => 2,
+            'content' => '<h2>Nikah Ceremonies at EMC</h2>
+<p>Marriage is half of one\'s deen. At Essex Muslim Centre, our Imams conduct Islamic marriage (Nikah) ceremonies in a blessed and dignified environment.</p>
+<h3>Our Services Include</h3>
+<ul>
+<li><strong>Nikah Ceremony:</strong> A formal Islamic marriage contract conducted in the presence of witnesses and according to Sunnah.</li>
+<li><strong>Pre-Marriage Guidance:</strong> One-to-one confidential sessions with our Imam covering rights, responsibilities, and expectations in Islamic marriage.</li>
+<li><strong>Documentation Support:</strong> Guidance on obtaining the relevant civil marriage documents alongside the Islamic ceremony.</li>
+<li><strong>Venue:</strong> Our main hall can accommodate families and guests for the ceremony.</li>
+</ul>
+<h3>How to Book</h3>
+<p>To book a Nikah ceremony, please contact our office at least 4 weeks in advance. Both parties and their walis (guardians) should be present for the initial consultation.</p>',
+        ),
+        array(
+            'title'   => 'Janaza Services',
+            'slug'    => 'janaza-services',
+            'icon'    => 'fas fa-praying-hands',
+            'excerpt' => 'Compassionate funeral prayer, ghusl, and burial coordination services available 24/7.',
+            'order'   => 3,
+            'content' => '<h2>Janaza Services — Available 24/7</h2>
+<p>Losing a loved one is one of life\'s most difficult moments. Essex Muslim Centre is here to support your family through the entire Janaza (funeral) process with compassion, care, and full adherence to Islamic tradition.</p>
+<h3>Services We Provide</h3>
+<ul>
+<li><strong>Ghusl (Islamic Washing):</strong> Carried out by trained volunteers in our on-site ghusl facility, with separate facilities for male and female deceased.</li>
+<li><strong>Kafan (Shrouding):</strong> Preparation and wrapping of the deceased according to Sunnah.</li>
+<li><strong>Janaza Prayer (Salat ul-Janaza):</strong> Congregational funeral prayer led by our Imam.</li>
+<li><strong>Burial Coordination:</strong> Liaison with local cemeteries including Chelmsford City Council cemeteries for Muslim burial plots.</li>
+<li><strong>Repatriation Guidance:</strong> Support for families wishing to repatriate the deceased to their home country.</li>
+</ul>
+<h3>Contact Us Urgently</h3>
+<p>For immediate Janaza support, contact our 24/7 emergency line. Our team will guide you through every step with sensitivity and Islamic care.</p>',
+        ),
+        array(
+            'title'   => 'Meet an Imam',
+            'slug'    => 'meet-an-imam',
+            'icon'    => 'fas fa-user-tie',
+            'excerpt' => 'Schedule a one-to-one appointment with our Imam for spiritual guidance, counselling, or Islamic advice.',
+            'order'   => 4,
+            'content' => '<h2>Meet an Imam — Private Appointments</h2>
+<p>Our resident Imam is available for private, confidential one-to-one appointments. Whether you are seeking Islamic guidance, spiritual support, or advice on a personal matter, we are here to help.</p>
+<h3>Areas of Guidance</h3>
+<ul>
+<li><strong>Spiritual Counselling:</strong> Personal struggles, mental wellbeing from an Islamic perspective, and strengthening one\'s relationship with Allah.</li>
+<li><strong>Family &amp; Relationship Advice:</strong> Islamic guidance on marriage, divorce, parenting, and family conflict resolution.</li>
+<li><strong>Islamic Rulings (Fatawa):</strong> Questions on halal/haram, worship, business transactions, and day-to-day Islamic practice.</li>
+<li><strong>Reversion Support:</strong> Dedicated guidance for those considering or who have recently embraced Islam.</li>
+<li><strong>Grief &amp; Bereavement:</strong> Spiritual support for those dealing with loss.</li>
+</ul>
+<h3>How to Book</h3>
+<p>Appointments are available on weekday afternoons and by arrangement. Please contact the office to schedule a session. All conversations are strictly confidential.</p>',
+        ),
+        array(
+            'title'   => 'Welfare Services',
+            'slug'    => 'welfare-services',
+            'icon'    => 'fas fa-hand-holding-heart',
+            'excerpt' => 'Food bank partnerships, financial counselling, and support for families in need.',
+            'order'   => 5,
+            'content' => '<h2>Community Welfare &amp; Support</h2>
+<p>Islam places great emphasis on caring for those in need. Essex Muslim Centre works to support vulnerable members of our community through a range of welfare services, carried out with dignity and respect.</p>
+<h3>What We Offer</h3>
+<ul>
+<li><strong>Emergency Food Parcels:</strong> In partnership with local food banks, we arrange emergency food support for families in crisis.</li>
+<li><strong>Zakat &amp; Sadaqah Distribution:</strong> We collect and distribute Zakat and Sadaqah funds to eligible recipients in the local Muslim community.</li>
+<li><strong>Financial Guidance:</strong> Signposting to halal financial advice, benefits entitlement support, and debt counselling services.</li>
+<li><strong>Mental Health Referrals:</strong> Culturally sensitive referrals to NHS and third-sector mental health support services.</li>
+<li><strong>Community Befriending:</strong> Connecting isolated elderly or vulnerable individuals with community volunteers.</li>
+</ul>
+<h3>Confidential Support</h3>
+<p>All welfare enquiries are handled confidentially by our trained volunteers. To speak to a welfare officer, please contact the centre directly.</p>',
+        ),
+        array(
+            'title'   => 'General Events',
+            'slug'    => 'general-events',
+            'icon'    => 'fas fa-calendar-alt',
+            'excerpt' => 'Community gatherings, Islamic talks, sports days, and interfaith activities throughout the year.',
+            'order'   => 6,
+            'content' => '<h2>EMC Events Programme</h2>
+<p>Throughout the year, Essex Muslim Centre organises a rich and varied programme of events for all members of the community — young and old, Muslim and non-Muslim alike.</p>
+<h3>Types of Events</h3>
+<ul>
+<li><strong>Islamic Talks &amp; Lectures:</strong> Monthly talks by visiting scholars and local Imams on topics relevant to contemporary Muslim life.</li>
+<li><strong>Eid Celebrations:</strong> Annual Eid ul-Fitr and Eid ul-Adha community gatherings with food, activities, and celebrations.</li>
+<li><strong>Ramadan Programme:</strong> Tarawih prayers, Iftar gatherings, Laylatul Qadr events, and charity fundraisers throughout the holy month.</li>
+<li><strong>Youth Sports Days:</strong> Football, cricket, and multi-sport events for young people in the community.</li>
+<li><strong>Interfaith Dialogue:</strong> Open days, mosque tours, and interfaith panel discussions welcoming neighbours of all faiths.</li>
+<li><strong>Fundraising Dinners:</strong> Annual gala dinners and community fundraisers supporting the building campaign.</li>
+</ul>
+<h3>Stay Updated</h3>
+<p>Follow our Events page and social media channels to stay up to date with upcoming events. All are welcome unless otherwise stated. Many events are free to attend.</p>',
+        ),
+    );
+
+    $all_done = true;
+
+    foreach ( $services as $svc ) {
+        $existing = get_page_by_path( $svc['slug'], OBJECT, 'emc_service' );
+        if ( $existing ) {
+            continue; // already exists, skip
+        }
+
+        $post_id = wp_insert_post( array(
+            'post_type'    => 'emc_service',
+            'post_title'   => $svc['title'],
+            'post_name'    => $svc['slug'],
+            'post_content' => $svc['content'],
+            'post_excerpt' => $svc['excerpt'],
+            'post_status'  => 'publish',
+            'menu_order'   => $svc['order'],
+        ) );
+
+        if ( $post_id && ! is_wp_error( $post_id ) ) {
+            update_post_meta( $post_id, '_emc_service_icon',     $svc['icon'] );
+            update_post_meta( $post_id, '_emc_service_order',    $svc['order'] );
+            update_post_meta( $post_id, '_emc_service_featured', '1' );
+        } else {
+            $all_done = false;
+        }
+    }
+
+    // Flush rewrite rules so /service/slug/ URLs work immediately
+    flush_rewrite_rules( false );
+
+    // Mark as done so this block never runs again on this install
+    if ( $all_done ) {
+        update_option( 'emc_services_seeded', '1' );
+    }
+}
+add_action( 'init', 'emc_auto_seed_services', 20 );
+
+
+/* ==========================================================================
    6. Body Classes
    ========================================================================== */
 function emc_body_classes( $classes ) {
