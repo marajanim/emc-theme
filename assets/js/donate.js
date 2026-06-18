@@ -452,5 +452,35 @@ document.addEventListener('DOMContentLoaded', () => {
         err.style.display = 'block';
         setTimeout(() => { err.style.display = 'none'; }, 4000);
     }
+    // ── Global bridge — lets other scripts (ramadan.js) open the modal ────
+    /**
+     * window.emcOpenStripeModal({ amount, fund, tab, name, email, giftAid })
+     * amount  : integer pence (e.g. 3000 = £30)
+     * fund    : string label shown in modal  (e.g. 'Ramadan Giving')
+     * tab     : string context key          (e.g. 'ramadan', 'fidya')
+     */
+    window.emcOpenStripeModal = function({ amount, fund = 'General Fund', tab = 'one-off',
+                                           name = '', email = '', giftAid = false }) {
+        if (amount < 50) return;
+        currentAmount  = amount;
+        currentFund    = fund;
+        currentTab     = tab;
+        currentName    = name;
+        currentEmail   = email;
+        currentGiftAid = giftAid;
+        currentMessage = '';
+
+        document.getElementById('esm-amount-display').textContent = getDisplayAmount(amount);
+        document.getElementById('esm-fund-name').textContent      = fund;
+
+        openModal();
+
+        initStripePayment(amount, fund, tab).catch(err => {
+            document.getElementById('esm-loading').style.display = 'none';
+            const errEl = document.getElementById('esm-error');
+            errEl.textContent = err.message;
+            errEl.hidden = false;
+        });
+    };
 
 });

@@ -15,9 +15,23 @@ get_header();
 wp_enqueue_style( 'emc-page-ramadan', EMC_ASSETS . '/css/ramadan.css', array( 'emc-style' ), EMC_VERSION );
 wp_enqueue_style( 'emc-page-donate',  EMC_ASSETS . '/css/donate.css',  array( 'emc-style' ), EMC_VERSION );
 
+// Stripe.js — required for PCI compliance (must load from js.stripe.com)
+wp_register_script( 'stripe-js', 'https://js.stripe.com/v3/', array(), null, true );
+wp_enqueue_script( 'stripe-js' );
+
 $donate_js = EMC_DIR . '/assets/js/donate.js';
 if ( file_exists( $donate_js ) ) {
-    wp_enqueue_script( 'emc-page-donate', EMC_ASSETS . '/js/donate.js', array( 'emc-script' ), filemtime( $donate_js ), true );
+    wp_enqueue_script( 'emc-page-donate', EMC_ASSETS . '/js/donate.js', array( 'emc-script', 'stripe-js' ), filemtime( $donate_js ), true );
+    wp_localize_script( 'emc-page-donate', 'emcStripeConfig', array(
+        'publishableKey' => emc_stripe_pub_key(),
+        'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+        'nonce'          => wp_create_nonce( 'emc_donate_nonce' ),
+    ) );
+}
+
+$ramadan_js = EMC_DIR . '/assets/js/ramadan.js';
+if ( file_exists( $ramadan_js ) ) {
+    wp_enqueue_script( 'emc-page-ramadan', EMC_ASSETS . '/js/ramadan.js', array( 'emc-page-donate' ), filemtime( $ramadan_js ), true );
 }
 
 $donate_url = get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donate/' );
@@ -169,7 +183,7 @@ $donate_url = get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donat
                         </label>
                     </div>
 
-                    <button class="btn btn-primary donate-submit" style="background:linear-gradient(135deg,#1A2050,#0F3A25);">
+                    <button id="ramadan-submit" class="btn btn-primary donate-submit" style="background:linear-gradient(135deg,#1A2050,#0F3A25);">
                         <i class="fas fa-moon" aria-hidden="true"></i>
                         <?php esc_html_e( 'Schedule My Ramadan Giving', 'emc-theme' ); ?>
                     </button>
@@ -218,10 +232,10 @@ $donate_url = get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donat
                         <p><?php esc_html_e( 'Total Fidya Due:', 'emc-theme' ); ?></p>
                         <div class="fitrana-amount" id="fidya-total">£5.00</div>
                     </div>
-                    <a href="<?php echo esc_url( $donate_url ); ?>?fund=General+Fund" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:1rem;">
+                    <button id="fidya-btn" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:1rem;">
                         <i class="fas fa-lock" aria-hidden="true"></i>
                         <?php esc_html_e( 'Pay Fidya Now', 'emc-theme' ); ?>
-                    </a>
+                    </button>
                 </div>
 
                 <!-- Ramadan Impact -->

@@ -123,6 +123,48 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
 
     /* =====================
+       Stripe — Schedule My Ramadan Giving
+       ===================== */
+    const ramadanSubmitBtn = document.getElementById('ramadan-submit');
+    if (ramadanSubmitBtn) {
+        ramadanSubmitBtn.addEventListener('click', () => {
+            const totalPence = Math.round(currentAmount * currentDays * 100);
+            if (totalPence < 50) {
+                alert('Please select a donation amount.');
+                return;
+            }
+            const fund = document.querySelector('.giving-form-col .cat-btn.active')?.dataset.cat || 'General Fund';
+            const label = `Ramadan Giving — ${fund} (${currentDays} days × £${currentAmount})`;
+
+            if (typeof window.emcOpenStripeModal === 'function') {
+                window.emcOpenStripeModal({ amount: totalPence, fund: label, tab: 'ramadan' });
+            }
+        });
+    }
+
+    /* =====================
+       Stripe — Pay Fidya Now
+       ===================== */
+    const fidyaBtn = document.getElementById('fidya-btn');
+    if (fidyaBtn) {
+        fidyaBtn.addEventListener('click', () => {
+            const rate = parseFloat(document.getElementById('fidya-rate')?.value) || 5;
+            const days = parseFloat(document.getElementById('fidya-days')?.value) || 1;
+            const totalPence = Math.round(rate * days * 100);
+
+            if (totalPence < 50) {
+                alert('Please enter a valid Fidya amount.');
+                return;
+            }
+            const label = `Fidya — ${days} missed fast${days !== 1 ? 's' : ''} (£${rate}/day)`;
+
+            if (typeof window.emcOpenStripeModal === 'function') {
+                window.emcOpenStripeModal({ amount: totalPence, fund: label, tab: 'fidya' });
+            }
+        });
+    }
+
+    /* =====================
        Scroll Reveal
        ===================== */
     const observer = new IntersectionObserver((entries) => {
