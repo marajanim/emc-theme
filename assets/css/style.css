@@ -474,10 +474,7 @@ img { max-width: 100%; display: block; border-radius: 8px; }
     font-variant-numeric: tabular-nums;
 }
 
-/* Push main-header below the top bar */
-.main-header {
-    top: 90px;
-}
+
 
 /* Push hero down to account for both bars */
 body.sticky-header-enabled .hero {
@@ -496,8 +493,9 @@ body.sticky-header-enabled .hero {
    ========================================================================== */
 .main-header {
     position: fixed;
-    top: 0; left: 0; right: 0;
-    /* Opaque dark navy — stays clearly visible above any hero */
+    /* 90px = height of prayer topbar — keeps nav below it */
+    top: 90px; left: 0; right: 0;
+    /* Opaque dark navy — clearly visible above any hero */
     background: rgba(8, 22, 36, 0.96);
     backdrop-filter: blur(18px) saturate(160%);
     -webkit-backdrop-filter: blur(18px) saturate(160%);
