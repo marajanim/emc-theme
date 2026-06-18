@@ -497,15 +497,16 @@ body.sticky-header-enabled .hero {
 .main-header {
     position: fixed;
     top: 0; left: 0; right: 0;
-    /* Solid dark-green base — glass overlay on top */
-    background: rgba(12, 31, 46, 0.82);
+    /* Opaque dark navy — stays clearly visible above any hero */
+    background: rgba(8, 22, 36, 0.96);
     backdrop-filter: blur(18px) saturate(160%);
     -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.22);
+    /* Teal border makes header edge crisp against the hero */
+    border-bottom: 2px solid rgba(42, 172, 160, 0.5);
+    box-shadow: 0 4px 28px rgba(0,0,0,0.4), 0 1px 0 rgba(42,172,160,0.18);
     z-index: 1000;
     padding: 14px 0;
-    transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
 }
 
 .main-header.scrolled {
@@ -514,7 +515,7 @@ body.sticky-header-enabled .hero {
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.10);
     padding: 10px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 2px solid rgba(42, 172, 160, 0.25);
 }
 
 .main-header .container {
