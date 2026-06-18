@@ -582,8 +582,15 @@ add_action( 'init', 'emc_auto_seed_services', 20 );
    ========================================================================== */
 function emc_auto_seed_events() {
 
+    // Check both the option flag AND actual post count
+    // (handles cases where option was set but posts were wiped by a re-import)
     if ( get_option( 'emc_events_seeded' ) ) {
-        return;
+        $count = wp_count_posts( 'emc_event' );
+        if ( isset( $count->publish ) && (int) $count->publish >= 6 ) {
+            return; // all good
+        }
+        // Posts missing despite option being set — reset and re-seed
+        delete_option( 'emc_events_seeded' );
     }
 
     $events = array(

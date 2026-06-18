@@ -126,16 +126,18 @@
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
     border: 1px solid var(--border-color);
-    transition: all var(--trans-normal);
-    opacity: 0;
-    transform: translateY(30px);
-    /* hidden by default, JS adds reveal */
+    transition: transform var(--trans-normal), box-shadow var(--trans-normal);
+    animation: evtCardIn 0.5s ease forwards;
 }
 
-.event-hub-card.reveal {
-    opacity: 1;
-    transform: translateY(0);
+/* Stagger delays via inline style on each card */
+@keyframes evtCardIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Keep .reveal class for JS compat (no-op now since animation handles it) */
+.event-hub-card.reveal { opacity: 1; transform: translateY(0); }
 
 .event-hub-card.filtered-out {
     display: none;
