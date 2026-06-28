@@ -76,12 +76,13 @@ if ( file_exists( $events_js_path ) ) {
                     $event_location = get_post_meta( get_the_ID(), '_emc_event_location', true );
                     $event_category = get_post_meta( get_the_ID(), '_emc_event_category', true ) ?: 'community';
                     $event_spots    = get_post_meta( get_the_ID(), '_emc_event_capacity', true );
+                    $flyer_url      = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'full' ) : EMC_ASSETS . '/gallery/Community Support Services/New-Muslim-600x338.jpeg';
                     $day   = $event_date ? date( 'd', strtotime( $event_date ) ) : '—';
                     $month = $event_date ? strtoupper( date( 'M', strtotime( $event_date ) ) ) : '';
             ?>
             <article class="event-hub-card scroll-reveal" data-category="<?php echo esc_attr( $event_category ); ?>"<?php echo $delay ? ' style="transition-delay:' . esc_attr( $delay ) . 's"' : ''; ?>>
                 <a href="<?php the_permalink(); ?>" class="event-card-link">
-                    <div class="event-hub-img" <?php if ( has_post_thumbnail() ) : ?>style="background-image:url('<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'emc-card' ) ); ?>');"<?php else : ?>style="background-image:url('<?php echo esc_url( EMC_ASSETS . '/gallery/Community Support Services/New-Muslim-600x338.jpeg' ); ?>');background-size:cover;background-position:center;"<?php endif; ?>>
+                    <div class="event-hub-img" data-flyer-url="<?php echo esc_url( $flyer_url ); ?>" title="<?php esc_attr_e( 'View full flyer', 'emc-theme' ); ?>" <?php if ( has_post_thumbnail() ) : ?>style="background-image:url('<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'emc-card' ) ); ?>');"<?php else : ?>style="background-image:url('<?php echo esc_url( EMC_ASSETS . '/gallery/Community Support Services/New-Muslim-600x338.jpeg' ); ?>');background-size:cover;background-position:center;"<?php endif; ?>>
                         <div class="event-hub-date"><span class="day"><?php echo esc_html( $day ); ?></span><span class="month"><?php echo esc_html( $month ); ?></span></div>
                         <span class="event-category-tag <?php echo esc_attr( $event_category ); ?>"><?php echo esc_html( ucfirst( $event_category ) ); ?></span>
                     </div>
@@ -103,7 +104,7 @@ if ( file_exists( $events_js_path ) ) {
                     $delay = round( fmod( $delay + 0.1, 0.4 ), 1 );
                 endwhile;
                 wp_reset_postdata();
-            else :
+            elseif ( false ) :
                 $demo_events = array(
                     array( 'title' => 'Community Support Services', 'day' => '15', 'month' => 'MAY', 'time' => '10:00 AM – 4:00 PM', 'loc' => 'EMC Centre',       'cat' => 'community',   'desc' => 'Supporting new Muslims and community members with guidance and resources.', 'spots' => 'Free entry',       'img' => '/gallery/Community Support Services/New-Muslim-600x338.jpeg' ),
                     array( 'title' => 'Career Advise Seminar',      'day' => '22', 'month' => 'MAY', 'time' => '6:00 PM – 8:00 PM',  'loc' => 'Main Hall',        'cat' => 'youth',       'desc' => 'Career guidance and mentorship for youth aged 14–18.',                      'spots' => '12 spots left',    'img' => '/gallery/Career Advise/WhatsApp-Image-2025-08-21-at-21.05.39-1-1-300x169.jpeg' ),
@@ -117,7 +118,7 @@ if ( file_exists( $events_js_path ) ) {
             ?>
             <article class="event-hub-card scroll-reveal" data-category="<?php echo esc_attr( $evt['cat'] ); ?>"<?php echo $delay ? ' style="transition-delay:' . esc_attr( $delay ) . 's"' : ''; ?>>
                 <a href="#" class="event-card-link">
-                    <div class="event-hub-img" style="background-image:url('<?php echo esc_url( EMC_ASSETS . $evt['img'] ); ?>');background-size:cover;background-position:center;">
+                    <div class="event-hub-img" data-flyer-url="<?php echo esc_url( EMC_ASSETS . $evt['img'] ); ?>" title="<?php esc_attr_e( 'View full flyer', 'emc-theme' ); ?>" style="background-image:url('<?php echo esc_url( EMC_ASSETS . $evt['img'] ); ?>');background-size:cover;background-position:center;">
                         <div class="event-hub-date"><span class="day"><?php echo esc_html( $evt['day'] ); ?></span><span class="month"><?php echo esc_html( $evt['month'] ); ?></span></div>
                         <span class="event-category-tag <?php echo esc_attr( $evt['cat'] ); ?>"><?php echo esc_html( ucfirst( $evt['cat'] ) ); ?></span>
                     </div>

@@ -3,6 +3,9 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+    const donateParams = new URLSearchParams(window.location.search);
+    const presetFund   = donateParams.get('fund') || '';
+    const presetAmount = parseFloat(donateParams.get('amount') || '0');
 
     /* =====================================================================
        Tab Switching
@@ -50,6 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    if (presetAmount > 0) {
+        const panel = document.getElementById('tab-one-off');
+        const customBtn = panel?.querySelector('.custom-other');
+        const customInput = panel?.querySelector('.custom-amount-input, #custom-amount-input');
+        panel?.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+        customBtn?.classList.add('active');
+        if (customInput) customInput.value = presetAmount.toFixed(2);
+        const customWrapper = panel?.querySelector('.custom-amount-wrapper');
+        if (customWrapper) customWrapper.style.display = 'block';
+        updateDonateButtonLabel(panel);
+    }
+
     function getActiveAmountPence(panel) {
         const activeBtn = panel.querySelector('.amount-btn.active');
         if (!activeBtn) return 0;
@@ -68,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateDonateButtonLabel(panel) {
+        if (!panel) return;
         const submitBtn = panel.querySelector('.donate-submit');
         if (!submitBtn) return;
         const amount = getActiveAmountDisplay(panel);
@@ -139,7 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const { publishableKey, ajaxUrl, nonce } = emcStripeConfig;
-    const stripe = Stripe(publishableKey);
+    const hasStripeKey = typeof publishableKey === 'string' && /^pk_(test|live)_/.test(publishableKey.trim());
+    const stripe = hasStripeKey ? Stripe(publishableKey.trim()) : null;
+
+    if (!hasStripeKey) {
+        console.warn('EMC: Stripe publishable key is missing or invalid. Add it in WP Admin > Settings > EMC Stripe.');
+    }
 
     // ── State ──────────────────────────────────────────────────────────────
     let stripeElements  = null;
@@ -151,7 +172,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentMessage  = '';
     let currentName     = '';
     let currentEmail    = '';
+    let currentAddress  = '';
     let currentTab      = 'one-off';
+    let currentFrequency = 'monthly';
+    let currentStartDate = '';
+    let currentConfirmMode = 'payment';
+    let currentSubscriptionId = '';
+    let currentOccurrences = 0;
 
     // ── Inject Payment Modal ───────────────────────────────────────────────
     const modal = document.createElement('div');
@@ -203,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="esm-success" id="esm-success" hidden>
                 <div class="esm-success-icon"><i class="fas fa-check-circle"></i></div>
                 <h3>JazakAllahu Khayran!</h3>
-                <p>Your donation of <strong id="esm-success-amount"></strong> has been received.</p>
+                <p id="esm-success-message">Your donation of <strong id="esm-success-amount"></strong> has been received.</p>
                 <p class="esm-receipt-note">A receipt has been emailed to you.</p>
                 <button class="btn btn-outline esm-close-btn" id="esm-success-close">Close</button>
             </div>
@@ -251,13 +278,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Create PaymentIntent & mount Stripe Element ────────────────────────
     async function initStripePayment(amountPence, fund, tab) {
-        const body = new URLSearchParams({
-            action : 'emc_stripe_create_intent',
-            nonce  : nonce,
-            amount : amountPence,
-            fund   : fund,
-            tab    : tab,
-        });
+        if (!stripe) {
+            throw new Error('Stripe is not configured yet. Please add the publishable and secret keys in WP Admin > Settings > EMC Stripe.');
+        }
+
+        const isSubscription = tab === 'regular' || tab === 'ramadan-daily';
+        const body = new URLSearchParams(
+            isSubscription
+                ? {
+                    action     : 'emc_stripe_create_subscription',
+                    nonce      : nonce,
+                    amount     : amountPence,
+                    fund       : fund,
+                    frequency  : currentFrequency,
+                    start_date : currentStartDate,
+                    occurrences: currentOccurrences,
+                    name       : currentName,
+                    email      : currentEmail,
+                    address    : currentAddress,
+                    gift_aid   : currentGiftAid ? '1' : '0',
+                    message    : currentMessage,
+                }
+                : {
+                    action : 'emc_stripe_create_intent',
+                    nonce  : nonce,
+                    amount : amountPence,
+                    fund   : fund,
+                    tab    : tab,
+                    name   : currentName,
+                    email  : currentEmail,
+                    address: currentAddress,
+                }
+        );
 
         const res  = await fetch(ajaxUrl, { method: 'POST', body });
         const data = await res.json();
@@ -265,6 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!data.success) throw new Error(data.data?.message || 'Payment gateway error.');
 
         currentPiId = data.data.pi_id;
+        currentConfirmMode = data.data.confirm_mode || 'payment';
+        currentSubscriptionId = data.data.subscription_id || '';
 
         // Initialize Stripe Elements with the client secret
         stripeElements = stripe.elements({ clientSecret: data.data.client_secret,
@@ -294,7 +348,9 @@ document.addEventListener('DOMContentLoaded', () => {
             mountEl.style.display                                   = 'block';
             const payBtn = document.getElementById('esm-pay-btn');
             payBtn.disabled = false;
-            payBtn.innerHTML = `<i class="fas fa-lock"></i><span>Pay ${getDisplayAmount(amountPence)}</span>`;
+            payBtn.innerHTML = isSubscription
+                ? `<i class="fas fa-sync-alt"></i><span>Set Up ${getDisplayAmount(amountPence)} ${getFrequencyLabel(currentFrequency)}</span>`
+                : `<i class="fas fa-lock"></i><span>Pay ${getDisplayAmount(amountPence)}</span>`;
         });
     }
 
@@ -302,13 +358,46 @@ document.addEventListener('DOMContentLoaded', () => {
         return '£' + (pence / 100).toFixed(2);
     }
 
+    function getFrequencyLabel(frequency) {
+        const labels = {
+            weekly: 'Weekly',
+            monthly: 'Monthly',
+            quarterly: 'Quarterly',
+            annually: 'Annually',
+            daily: 'Daily',
+        };
+        return labels[frequency] || 'Monthly';
+    }
+
     // ── Collect donor details from active panel ────────────────────────────
     function collectDonorDetails(panel) {
-        currentName     = panel.querySelector('#donor-name')?.value?.trim()    || '';
-        currentEmail    = panel.querySelector('#donor-email')?.value?.trim()   || '';
+        currentName     = panel.querySelector('.donor-name, #donor-name')?.value?.trim() || '';
+        currentEmail    = panel.querySelector('.donor-email, #donor-email')?.value?.trim() || '';
+        currentAddress  = panel.querySelector('.donor-address, #donor-address')?.value?.trim() || '';
         currentGiftAid  = !!(panel.querySelector('.gift-aid-check')?.checked);
         currentMessage  = panel.querySelector('#donor-message')?.value?.trim() || '';
-        currentFund     = panel.querySelector('.cat-btn.active')?.dataset.cat  || 'General Fund';
+        currentFund     = panel.querySelector('.cat-btn.active')?.dataset.cat
+                       || panel.querySelector('.regular-fund')?.value
+                       || 'General Fund';
+        if (presetFund && panel.id === 'tab-one-off') {
+            currentFund = presetFund;
+        }
+        currentFrequency = panel.querySelector('.regular-frequency')?.value || 'monthly';
+        currentStartDate = panel.querySelector('.regular-start-date')?.value || '';
+        currentOccurrences = 0;
+    }
+
+    function validateDonorDetails(panel) {
+        collectDonorDetails(panel);
+        if (!currentName) {
+            showInlineError(panel, 'Please enter your full name.');
+            return false;
+        }
+        if (!currentEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentEmail)) {
+            showInlineError(panel, 'Please enter a valid email address.');
+            return false;
+        }
+        return true;
     }
 
     // ── Handle "Donate Securely" button clicks (one-off & regular) ────────
@@ -323,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showInlineError(panel, 'Please select or enter a donation amount (minimum £0.50).');
                 return;
             }
-            collectDonorDetails(panel);
+            if (!validateDonorDetails(panel)) return;
             currentAmount = pence;
 
             // Update modal display
@@ -352,6 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
             currentAmount  = pence;
             currentFund    = 'Zakat';
             currentTab     = 'zakat';
+            const panel = zakatDonateBtn.closest('.tab-panel');
+            if (!validateDonorDetails(panel)) return;
+            currentFund    = 'Zakat';
             currentGiftAid = false;
             currentMessage = '';
 
@@ -380,30 +472,47 @@ document.addEventListener('DOMContentLoaded', () => {
         errEl.hidden = true;
 
         try {
-            const { error } = await stripe.confirmPayment({
-                elements  : stripeElements,
-                redirect  : 'if_required',
-                confirmParams: {
-                    return_url: window.location.href + '?donated=1',
-                    payment_method_data: {
-                        billing_details: {
+            const confirmParams = {
+                return_url: window.location.href + '?donated=1',
+                payment_method_data: {
+                    billing_details: {
                             name  : currentName  || undefined,
                             email : currentEmail || undefined,
-                        },
                     },
                 },
-            });
+            };
+
+            const result = currentConfirmMode === 'setup'
+                ? await stripe.confirmSetup({
+                    elements: stripeElements,
+                    redirect: 'if_required',
+                    confirmParams,
+                })
+                : await stripe.confirmPayment({
+                    elements  : stripeElements,
+                    redirect  : 'if_required',
+                    confirmParams,
+                });
+
+            const { error } = result;
 
             if (error) {
                 errEl.textContent = error.message;
                 errEl.hidden      = false;
                 payBtn.disabled   = false;
-                payBtn.innerHTML  = `<i class="fas fa-lock"></i><span>Pay ${getDisplayAmount(currentAmount)}</span>`;
+                payBtn.innerHTML  = (currentTab === 'regular' || currentTab === 'ramadan-daily')
+                    ? `<i class="fas fa-sync-alt"></i><span>Set Up ${getDisplayAmount(currentAmount)} ${getFrequencyLabel(currentFrequency)}</span>`
+                    : `<i class="fas fa-lock"></i><span>Pay ${getDisplayAmount(currentAmount)}</span>`;
                 return;
             }
 
             // Payment succeeded — record it
-            await recordDonation();
+            if (currentConfirmMode === 'payment') {
+                await recordDonation();
+            }
+            if ((currentTab === 'regular' || currentTab === 'ramadan-daily') && currentSubscriptionId) {
+                await recordSubscriptionSetup();
+            }
             showSuccess();
 
         } catch (err) {
@@ -424,6 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fund     : currentFund,
             name     : currentName,
             email    : currentEmail,
+            address  : currentAddress,
             gift_aid : currentGiftAid ? '1' : '0',
             message  : currentMessage,
         });
@@ -431,12 +541,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ── Show success state ─────────────────────────────────────────────────
+    async function recordSubscriptionSetup() {
+        const body = new URLSearchParams({
+            action          : 'emc_stripe_record_subscription_setup',
+            nonce           : nonce,
+            subscription_id : currentSubscriptionId,
+            setup_ref       : currentPiId,
+            amount          : currentAmount,
+            fund            : currentFund,
+            frequency       : currentFrequency,
+            start_date      : currentStartDate,
+            occurrences     : currentOccurrences,
+            name            : currentName,
+            email           : currentEmail,
+            address         : currentAddress,
+            gift_aid        : currentGiftAid ? '1' : '0',
+            message         : currentMessage,
+        });
+        await fetch(ajaxUrl, { method: 'POST', body });
+    }
+
     function showSuccess() {
         document.getElementById('payment-element').style.display = 'none';
         document.getElementById('esm-pay-btn').style.display     = 'none';
         document.querySelector('.esm-secure-note').hidden         = true;
         document.getElementById('esm-error').hidden               = true;
-        document.getElementById('esm-success-amount').textContent = getDisplayAmount(currentAmount);
+        document.getElementById('esm-success-message').innerHTML = (currentTab === 'regular' || currentTab === 'ramadan-daily')
+            ? `Your ${getFrequencyLabel(currentFrequency).toLowerCase()} donation of <strong id="esm-success-amount">${getDisplayAmount(currentAmount)}</strong> has been set up.`
+            : `Your donation of <strong id="esm-success-amount">${getDisplayAmount(currentAmount)}</strong> has been received.`;
         document.getElementById('esm-success').hidden             = false;
     }
 
@@ -454,21 +586,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // ── Global bridge — lets other scripts (ramadan.js) open the modal ────
     /**
-     * window.emcOpenStripeModal({ amount, fund, tab, name, email, giftAid })
+     * window.emcOpenStripeModal({ amount, fund, tab, name, email, address, message, giftAid })
      * amount  : integer pence (e.g. 3000 = £30)
      * fund    : string label shown in modal  (e.g. 'Ramadan Giving')
      * tab     : string context key          (e.g. 'ramadan', 'fidya')
      */
     window.emcOpenStripeModal = function({ amount, fund = 'General Fund', tab = 'one-off',
-                                           name = '', email = '', giftAid = false }) {
+                                           name = '', email = '', address = '', message = '', giftAid = false,
+                                           frequency = 'monthly', startDate = '', occurrences = 0 }) {
         if (amount < 50) return;
         currentAmount  = amount;
         currentFund    = fund;
         currentTab     = tab;
         currentName    = name;
         currentEmail   = email;
+        currentAddress = address;
         currentGiftAid = giftAid;
-        currentMessage = '';
+        currentMessage = message;
+        currentFrequency = frequency;
+        currentStartDate = startDate;
+        currentOccurrences = parseInt(occurrences || 0, 10);
 
         document.getElementById('esm-amount-display').textContent = getDisplayAmount(amount);
         document.getElementById('esm-fund-name').textContent      = fund;

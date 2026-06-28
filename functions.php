@@ -242,15 +242,18 @@ if ( ! function_exists( 'emc_enqueue_page_assets' ) ) :
 
         $slug = get_post_field( 'post_name', get_queried_object_id() );
 
+        // Donate and Ramadan templates enqueue their own Stripe dependencies/config.
+        if ( in_array( $slug, array( 'donate', 'ramadan' ), true ) ) {
+            return;
+        }
+
         $map = array(
-            'donate'        => array( 'css' => 'donate.css',       'js' => 'donate.js' ),
             'events'        => array( 'css' => 'events.css',       'js' => 'events.js' ),
             'contact'       => array( 'css' => 'contact.css',      'js' => 'contact.js' ),
             'prayer-times'  => array( 'css' => 'prayer-times.css', 'js' => 'prayer-times.js' ),
             'media'         => array( 'css' => 'media.css',        'js' => 'media.js' ),
             'services'      => array( 'css' => 'services.css',     'js' => 'services.js' ),
             'about'         => array( 'css' => 'about.css',        'js' => 'about.js' ),
-            'ramadan'       => array( 'css' => 'ramadan.css',      'js' => 'ramadan.js' ),
             'campaign'      => array( 'css' => 'campaign.css',     'js' => 'campaign.js' ),
         );
 
@@ -583,6 +586,10 @@ add_action( 'init', 'emc_auto_seed_services', 20 );
    ========================================================================== */
 function emc_auto_seed_events() {
 
+    if ( get_option( 'emc_events_seeded' ) ) {
+        return;
+    }
+
     // Check both the option flag AND actual post count
     // (handles cases where option was set but posts were wiped by a re-import)
     if ( get_option( 'emc_events_seeded' ) ) {
@@ -622,7 +629,7 @@ function emc_auto_seed_events() {
 <li>Free parking nearby</li>
 </ul>
 <h3>Location</h3>
-<p>Essex Muslim Centre, Victoria Road, Chelmsford, CM1 1LW. The main hall entrance is on Victoria Road. Overflow into the side hall when required.</p>',
+<p>Essex Muslim Centre, Cuton Hall Lane, Chelmsford, CM2 6PB. Please use the exact map pin for the most accurate entrance and drop-off point.</p>',
         ),
         array(
             'title'    => 'Arabic Education Open Day',
@@ -810,7 +817,7 @@ function emc_auto_seed_events() {
         update_option( 'emc_events_seeded', '1' );
     }
 }
-add_action( 'init', 'emc_auto_seed_events', 21 );
+// Do not auto-create demo events on every install/load; admins must be able to delete them.
 
 /* ==========================================================================
    6. Body Classes

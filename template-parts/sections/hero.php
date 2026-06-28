@@ -69,11 +69,10 @@ $hero_img_url = $bg_image_id ? wp_get_attachment_image_url( $bg_image_id, 'emc-h
             <div class="prayer-times-widget glass-card" id="hero-prayer-widget">
                 <div class="widget-header">
                     <h2 style="color:var(--primary-green)">
-                        <i class="fas fa-mosque" aria-hidden="true"></i>
                         <?php esc_html_e( 'Daily Salah', 'emc-theme' ); ?>
                     </h2>
                     <p style="color:var(--text-muted);font-size:var(--step--1)">
-                        <?php echo esc_html( emc_option( 'emc_location', 'Chelmsford, Essex' ) ); ?>
+                        <?php echo esc_html( emc_option( 'emc_location', 'Cuton Hall Lane, Chelmsford' ) ); ?>
                     </p>
                 </div>
                 <div class="countdown-timer">

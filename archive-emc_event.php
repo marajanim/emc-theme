@@ -171,7 +171,7 @@ if ( $event_cats && ! is_wp_error( $event_cats ) ) :
         <?php
         // ── Static fallback when no events exist yet ──────────────────────
         $demo_events = function_exists( 'emc_demo_get_events' ) ? emc_demo_get_events() : array();
-        if ( ! empty( $demo_events ) ) :
+        if ( false && ! empty( $demo_events ) ) :
         ?>
         <h2 class="archive-section-heading">
             <i class="fas fa-calendar-day" aria-hidden="true"></i>

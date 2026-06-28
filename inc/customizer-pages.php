@@ -159,7 +159,7 @@ function emc_register_page_content_sections( $wp_customize ) {
         'prayer_hero_desc'        => 'Essex Muslim Centre, Chelmsford. All times are calculated for our location.',
         'prayer_hijri_date'       => '12 Dhul-Qa\'dah 1447 AH',
         'prayer_widget_label'     => 'Today\'s Prayer Times',
-        'prayer_location_label'   => 'Chelmsford, Essex',
+        'prayer_location_label'   => 'Cuton Hall Lane, Chelmsford',
         'prayer_next_label'       => 'Next:',
         'prayer_masjidbox_embed'  => '',
         'prayer_placeholder_embed_note' => 'Live MasjidBox widget embed code will be placed here.',
@@ -261,7 +261,7 @@ function emc_register_page_content_sections( $wp_customize ) {
         'contact_success_title'       => 'Message Sent Successfully',
         'contact_success_desc'        => 'Thank you for reaching out. We will get back to you shortly.',
         'contact_visit_heading'       => 'Visit Us',
-        'contact_visit_address'       => '',
+        'contact_visit_address'       => "Essex Muslim Centre\nCuton Hall Lane\nChelmsford\nCM2 6PB",
         'contact_email_heading'       => 'Email Us',
         'contact_email_hours'         => 'Monitored Monday–Friday, 9am–5pm',
         'contact_hours_heading'       => 'Opening Hours',
@@ -272,7 +272,7 @@ function emc_register_page_content_sections( $wp_customize ) {
         'contact_hours_office_val'    => 'Mon-Fri, 10am - 4pm',
         'contact_hours_jumuah_label'  => 'Jumu\'ah:',
         'contact_hours_jumuah_val'    => 'Friday, 12:00pm - 2:00pm',
-        'contact_map_embed'           => '',
+        'contact_map_embed'           => 'https://www.google.com/maps?q=51.745083,0.507917&output=embed',
     );
     emc_bulk_text_settings( $wp_customize, $contact, 'emc_pg_contact' );
 

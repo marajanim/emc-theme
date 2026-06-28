@@ -218,10 +218,10 @@ function emc_customize_register( $wp_customize ) {
     emc_add_text_setting( $wp_customize, 'emc_phone', '',
         'emc_identity', __( 'Phone Number (optional)', 'emc-theme' ) );
 
-    emc_add_text_setting( $wp_customize, 'emc_location', 'Chelmsford, Essex',
+    emc_add_text_setting( $wp_customize, 'emc_location', 'Cuton Hall Lane, Chelmsford',
         'emc_identity', __( 'Location (short, e.g. "Chelmsford, Essex")', 'emc-theme' ) );
 
-    emc_add_text_setting( $wp_customize, 'emc_address_line1', '',
+    emc_add_text_setting( $wp_customize, 'emc_address_line1', 'Cuton Hall Lane',
         'emc_identity', __( 'Street Address (Line 1)', 'emc-theme' ) );
 
     emc_add_text_setting( $wp_customize, 'emc_address_line2', '',
@@ -230,7 +230,7 @@ function emc_customize_register( $wp_customize ) {
     emc_add_text_setting( $wp_customize, 'emc_address_city', 'Chelmsford',
         'emc_identity', __( 'City', 'emc-theme' ) );
 
-    emc_add_text_setting( $wp_customize, 'emc_address_postcode', '',
+    emc_add_text_setting( $wp_customize, 'emc_address_postcode', 'CM2 6PB',
         'emc_identity', __( 'Postcode', 'emc-theme' ) );
 
     /* ──────────────────────────────────────────────────────────────────────
@@ -369,7 +369,7 @@ function emc_customize_register( $wp_customize ) {
     emc_add_textarea_setting(
         $wp_customize,
         'emc_footer_address',
-        __( "Victoria Road\nChelmsford\nCM1 1LW", 'emc-theme' ),
+        __( "Essex Muslim Centre\nCuton Hall Lane\nChelmsford\nCM2 6PB", 'emc-theme' ),
         'emc_footer_opts',
         __( 'Footer Address (each line is a new line)', 'emc-theme' )
     );
@@ -633,6 +633,12 @@ function emc_customize_register( $wp_customize ) {
 
     emc_add_text_setting( $wp_customize, 'emc_events_cta_label', __( 'View All Events', 'emc-theme' ),
         'emc_hp_events', __( 'CTA Button Label', 'emc-theme' ) );
+
+    emc_add_text_setting( $wp_customize, 'emc_events_selected', '',
+        'emc_hp_events', __( 'Homepage Event IDs or slugs (comma separated)', 'emc-theme' ) );
+
+    emc_add_text_setting( $wp_customize, 'emc_events_count', '2',
+        'emc_hp_events', __( 'Number of events to show', 'emc-theme' ) );
 
     /* ── Campaign Section ───────────────────────────────────────────────── */
     $wp_customize->add_section( 'emc_hp_campaign', array(

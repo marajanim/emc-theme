@@ -28,6 +28,10 @@ $donors     = (int) emc_option( 'emc_campaign_donors', 247 );
 $cta_label  = emc_option( 'emc_campaign_cta_label', __( 'Donate to Campaign', 'emc-theme' ) );
 $cta_url    = emc_option( 'emc_campaign_cta_url', '' ) ?: ( get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donate/' ) );
 $percent    = $target > 0 ? min( 100, round( ( $raised / $target ) * 100 ) ) : 0;
+$bank_pay_url = 'https://paymentrequest.natwestpayit.com/reusable-link/39ee348b-8fe1-41fe-aa6b-9109dc847445';
+$phone_digits = preg_replace( '/\D+/', '', emc_option( 'emc_phone', '' ) );
+$pledge_text  = rawurlencode( 'Assalamu alaikum, I would like to pledge towards the Badr Wall building fund.' );
+$whatsapp_url = $phone_digits ? 'https://wa.me/' . $phone_digits . '?text=' . $pledge_text : ( get_permalink( get_page_by_path( 'contact' ) ) ?: home_url( '/contact/' ) );
 ?>
 
 <!-- Campaign Hero -->
@@ -139,6 +143,47 @@ $percent    = $target > 0 ? min( 100, round( ( $raised / $target ) * 100 ) ) : 0
                     <strong><?php esc_html_e( 'Friend of the Mosque', 'emc-theme' ); ?></strong>
                     <span><?php esc_html_e( 'Any generous contribution', 'emc-theme' ); ?></span>
                 </div>
+            </div>
+        </div>
+
+        <div class="badr-payment-options">
+            <?php
+            $badr_options = array(
+                array( 'title' => 'Founder of the Mosque', 'amount' => '1000', 'desc' => 'One-off £1,000+ gift or £313 monthly pledge.' ),
+                array( 'title' => 'Co-Founder of the Mosque', 'amount' => '313', 'desc' => 'A £313-£999 contribution towards the Badr Wall.' ),
+                array( 'title' => 'Supporter', 'amount' => '100', 'desc' => 'A £100-£312 contribution to secure a supporter place.' ),
+            );
+            foreach ( $badr_options as $option ) :
+                $stripe_link = add_query_arg(
+                    array(
+                        'fund'   => 'Building Fund',
+                        'amount' => $option['amount'],
+                    ),
+                    $cta_url
+                );
+            ?>
+            <div class="badr-payment-card">
+                <h3><?php echo esc_html( $option['title'] ); ?></h3>
+                <p><?php echo esc_html( $option['desc'] ); ?></p>
+                <div class="badr-payment-actions">
+                    <a href="<?php echo esc_url( $stripe_link ); ?>" class="btn btn-primary">
+                        <i class="fas fa-credit-card" aria-hidden="true"></i>
+                        <?php esc_html_e( 'Pay by Card', 'emc-theme' ); ?>
+                    </a>
+                    <a href="<?php echo esc_url( $bank_pay_url ); ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-university" aria-hidden="true"></i>
+                        <?php esc_html_e( 'Pay by Bank', 'emc-theme' ); ?>
+                    </a>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            <div class="badr-payment-card badr-pledge-card">
+                <h3><?php esc_html_e( 'Need Instalments?', 'emc-theme' ); ?></h3>
+                <p><?php esc_html_e( 'Speak to the team about a payment schedule or pledge before paying.', 'emc-theme' ); ?></p>
+                <a href="<?php echo esc_url( $whatsapp_url ); ?>" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                    <?php esc_html_e( 'WhatsApp to Pledge', 'emc-theme' ); ?>
+                </a>
             </div>
         </div>
 

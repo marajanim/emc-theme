@@ -18,7 +18,7 @@ $show_donate   = (bool) emc_option( 'emc_header_donate_btn', true );
 $donate_label  = emc_option( 'emc_header_donate_label', __( 'Donate Now', 'emc-theme' ) );
 $sticky_header = (bool) emc_option( 'emc_header_sticky', true );
 $cookie_on     = (bool) emc_option( 'emc_cookie_enabled', true );
-$logo_height   = (int) emc_option( 'emc_logo_height', 52 );
+$logo_height   = (int) emc_option( 'emc_logo_height', 64 );
 $cookie_msg    = emc_option( 'emc_cookie_message', __( 'We use cookies to improve your experience. By continuing you agree to our Privacy Policy.', 'emc-theme' ) );
 $cookie_accept = emc_option( 'emc_cookie_accept_label', __( 'Accept', 'emc-theme' ) );
 $cookie_decline = emc_option( 'emc_cookie_decline_label', __( 'Decline', 'emc-theme' ) );
@@ -106,25 +106,33 @@ $cookie_decline = emc_option( 'emc_cookie_decline_label', __( 'Decline', 'emc-th
         <!-- Left: Date & Jumu'ah -->
         <div class="ptb-left">
             <div class="ptb-dates">
-                <span class="ptb-gregorian" id="ptb-gregorian"><?php echo esc_html( date_i18n( 'j F Y' ) ); ?></span>
+                <span class="ptb-gregorian" id="ptb-gregorian"><?php echo esc_html( date_i18n( 'jS F Y' ) ); ?></span>
                 <span class="ptb-sep" aria-hidden="true">·</span>
-                <span class="ptb-hijri" id="ptb-hijri"><?php esc_html_e( 'Loading…', 'emc-theme' ); ?></span>
+                <span class="ptb-hijri" id="ptb-hijri"><?php esc_html_e( 'Hijri date loading', 'emc-theme' ); ?></span>
             </div>
             <div class="ptb-jumuah" id="ptb-jumuah-wrap">
-                <span class="ptb-jumuah-label"><?php esc_html_e( "Jumu'ah", 'emc-theme' ); ?></span>
+                <span class="ptb-jumuah-label"><?php esc_html_e( "Jum'a", 'emc-theme' ); ?></span>
                 <span class="ptb-jumuah-time" id="ptb-jumuah">--:--</span>
+                <span class="ptb-jumuah-extra">&amp; 14:15</span>
+                <span class="ptb-jumuah-dot" aria-hidden="true">·</span>
+                <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'prayer-times' ) ) ?: home_url( '/prayer-times/' ) ); ?>" class="ptb-prayer-times-link">
+                    <?php esc_html_e( 'Prayer Times', 'emc-theme' ); ?>
+                </a>
             </div>
         </div>
 
         <!-- Right: 5 Prayer columns -->
         <div class="ptb-prayers" role="table" aria-label="<?php esc_attr_e( 'Prayer times table', 'emc-theme' ); ?>">
-            <?php foreach ( array( 'fajr' => 'Fajr', 'dhuhr' => 'Dhuhr', 'asr' => 'Asr', 'maghrib' => 'Maghrib', 'isha' => 'Isha' ) as $key => $label ) : ?>
+            <div class="ptb-row-head" aria-hidden="true">
+                <span></span>
+                <span><?php esc_html_e( "Jama'at", 'emc-theme' ); ?></span>
+                <span><?php esc_html_e( 'Begins', 'emc-theme' ); ?></span>
+            </div>
+            <?php foreach ( array( 'fajr' => 'Fajr', 'dhuhr' => 'Zuhr', 'asr' => 'Asr', 'maghrib' => 'Maghrib', 'isha' => 'Isha' ) as $key => $label ) : ?>
             <div class="ptb-prayer-col" data-prayer="<?php echo esc_attr( $key ); ?>" role="columnheader">
                 <span class="ptb-prayer-name"><?php echo esc_html( $label ); ?></span>
-                <span class="ptb-row-label"><?php esc_html_e( "Adhan", 'emc-theme' ); ?></span>
-                <span class="ptb-adhan" id="ptb-adhan-<?php echo esc_attr( $key ); ?>">--:--</span>
-                <span class="ptb-row-label"><?php esc_html_e( "Iqamah", 'emc-theme' ); ?></span>
                 <span class="ptb-iqamah" id="ptb-iqamah-<?php echo esc_attr( $key ); ?>">--:--</span>
+                <span class="ptb-adhan" id="ptb-adhan-<?php echo esc_attr( $key ); ?>">--:--</span>
             </div>
             <?php endforeach; ?>
         </div>

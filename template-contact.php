@@ -144,7 +144,7 @@ if ( file_exists( $contact_js_path ) ) {
                 <div class="map-container">
                     <?php
                     $map_embed = emc_acf( 'contact_map_embed', '' );
-                    $default_map = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d39587.72973160271!2d0.4357774577884705!3d51.73489814407889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8e9d3d3a77a9d%3A0xc3924f7d37a85d34!2sChelmsford!5e0!3m2!1sen!2suk!4v1700000000000!5m2!1sen!2suk';
+                    $default_map = 'https://www.google.com/maps?q=51.745083,0.507917&output=embed';
                     $map_src = $map_embed ? $map_embed : $default_map;
                     ?>
                     <iframe
@@ -156,6 +156,20 @@ if ( file_exists( $contact_js_path ) ) {
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
+                </div>
+
+                <div class="getting-there-card glass-card">
+                    <h3><i class="fas fa-route" aria-hidden="true"></i> <?php esc_html_e( 'Getting There', 'emc-theme' ); ?></h3>
+                    <p><?php esc_html_e( 'Use the exact map pin for Essex Muslim Centre, Cuton Hall Lane, CM2 6PB. The postcode may not always land on the precise entrance.', 'emc-theme' ); ?></p>
+                    <ul>
+                        <li><strong><?php esc_html_e( 'By train:', 'emc-theme' ); ?></strong> <?php esc_html_e( 'Travel from London Liverpool Street to Chelmsford, then take a local taxi or connecting bus towards Cuton Hall Lane.', 'emc-theme' ); ?></li>
+                        <li><strong><?php esc_html_e( 'By bus:', 'emc-theme' ); ?></strong> <?php esc_html_e( 'Use local Chelmsford services towards Springfield/Cuton Hall Lane and check the latest route before travelling.', 'emc-theme' ); ?></li>
+                        <li><strong><?php esc_html_e( 'By taxi/car:', 'emc-theme' ); ?></strong> <?php esc_html_e( 'Share the coordinates 51°44\'42.3"N 0°30\'28.5"E with your driver for the most accurate drop-off point.', 'emc-theme' ); ?></li>
+                    </ul>
+                    <a href="https://maps.app.goo.gl/ctL7XFdazy4xsHAA7" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+                        <?php esc_html_e( 'Open Exact Map Pin', 'emc-theme' ); ?>
+                    </a>
                 </div>
             </div>
 

@@ -121,4 +121,50 @@ document.addEventListener('DOMContentLoaded', () => {
     // ARIA
     gridBtn?.setAttribute('role', 'button');
     listBtn?.setAttribute('role', 'button');
+
+    /* =====================
+       Full Flyer Preview
+       ===================== */
+    const flyerModal = document.createElement('div');
+    flyerModal.className = 'event-flyer-modal';
+    flyerModal.innerHTML = `
+        <button class="event-flyer-close" type="button" aria-label="Close flyer">&times;</button>
+        <img src="" alt="Event flyer">
+    `;
+    document.body.appendChild(flyerModal);
+
+    const flyerImg = flyerModal.querySelector('img');
+    const closeFlyer = () => {
+        flyerModal.classList.remove('is-visible');
+        document.body.style.overflow = '';
+        if (flyerImg) flyerImg.src = '';
+    };
+
+    document.querySelectorAll('.event-hub-img[data-flyer-url]').forEach(img => {
+        img.setAttribute('role', 'button');
+        img.setAttribute('tabindex', '0');
+        img.addEventListener('click', event => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (!flyerImg) return;
+            flyerImg.src = img.dataset.flyerUrl;
+            flyerModal.classList.add('is-visible');
+            document.body.style.overflow = 'hidden';
+        });
+        img.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                img.click();
+            }
+        });
+    });
+
+    flyerModal.addEventListener('click', event => {
+        if (event.target === flyerModal || event.target.classList.contains('event-flyer-close')) {
+            closeFlyer();
+        }
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && flyerModal.classList.contains('is-visible')) closeFlyer();
+    });
 });

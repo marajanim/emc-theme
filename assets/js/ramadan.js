@@ -23,10 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================
-       Live Countdown to Ramadan 2026
-       Approx: 17 February 2026
+       Live Countdown to Ramadan start date
        ===================== */
-    const ramadanDate = new Date('2026-02-17T00:00:00').getTime();
+    const configuredRamadanDate = window.emcRamadanConfig?.startDate || '2027-02-08';
+    const ramadanStartDate = new Date(`${configuredRamadanDate}T00:00:00`);
+    if (Number.isNaN(ramadanStartDate.getTime())) {
+        ramadanStartDate.setFullYear(2027, 1, 8);
+        ramadanStartDate.setHours(0, 0, 0, 0);
+    }
+    const ramadanDate = ramadanStartDate.getTime();
 
     function updateCountdown() {
         const now = new Date().getTime();
@@ -89,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const submitBtn = document.getElementById('ramadan-submit');
         if (submitBtn) {
-            submitBtn.innerHTML = `<i class="fas fa-moon"></i> Schedule Giving — £${total.toFixed(2)} total`;
+            submitBtn.innerHTML = `<i class="fas fa-moon"></i> Schedule Daily Giving - £${currentAmount.toFixed(2)}/day`;
         }
     }
 
@@ -120,6 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateSummary();
 
+    function formatDateForStripe(date) {
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
 
     /* =====================
        Stripe — Schedule My Ramadan Giving
@@ -127,16 +139,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const ramadanSubmitBtn = document.getElementById('ramadan-submit');
     if (ramadanSubmitBtn) {
         ramadanSubmitBtn.addEventListener('click', () => {
-            const totalPence = Math.round(currentAmount * currentDays * 100);
-            if (totalPence < 50) {
+            const dailyPence = Math.round(currentAmount * 100);
+            if (dailyPence < 50) {
                 alert('Please select a donation amount.');
                 return;
             }
-            const fund = document.querySelector('.giving-form-col .cat-btn.active')?.dataset.cat || 'General Fund';
-            const label = `Ramadan Giving — ${fund} (${currentDays} days × £${currentAmount})`;
+            const fund = document.querySelector('.ramadan-form-col .cat-btn.active')?.dataset.cat || 'General Fund';
+            const label = `Ramadan Daily Giving - ${fund} (${currentDays} days x £${currentAmount.toFixed(2)})`;
+
+            const donorName = document.getElementById('ramadan-donor-name')?.value.trim() || '';
+            const donorEmail = document.getElementById('ramadan-donor-email')?.value.trim() || '';
+            const donorAddress = document.getElementById('ramadan-donor-address')?.value.trim() || '';
+            const donorMessage = document.getElementById('ramadan-dedication')?.value.trim() || '';
+
+            if (!donorName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donorEmail)) {
+                alert('Please enter your name and a valid email address.');
+                return;
+            }
 
             if (typeof window.emcOpenStripeModal === 'function') {
-                window.emcOpenStripeModal({ amount: totalPence, fund: label, tab: 'ramadan' });
+                window.emcOpenStripeModal({
+                    amount: dailyPence,
+                    fund: label,
+                    tab: 'ramadan-daily',
+                    name: donorName,
+                    email: donorEmail,
+                    address: donorAddress,
+                    message: donorMessage,
+                    frequency: 'daily',
+                    startDate: formatDateForStripe(ramadanStartDate),
+                    occurrences: currentDays,
+                    giftAid: !!document.getElementById('ramadan-giftaid')?.checked,
+                });
             }
         });
     }

@@ -144,6 +144,32 @@
     background: var(--white);
 }
 
+.getting-there-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    background: var(--white);
+}
+
+.getting-there-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+    color: var(--deep-blue);
+}
+
+.getting-there-card p,
+.getting-there-card li {
+    color: var(--text-muted);
+    font-size: var(--step--1);
+    line-height: 1.65;
+}
+
+.getting-there-card ul {
+    margin: 1rem 0 1.25rem;
+    padding-left: 1.1rem;
+}
+
 /* =====================
    Responsive
    ===================== */

@@ -227,10 +227,10 @@ function emc_demo_get_theme_mods() {
         'emc_header_donate_label' => 'Donate Now',
 
         /* ── Contact Info ─────────────────────────────────────── */
-        'emc_location'         => 'Chelmsford, Essex',
-        'emc_address_line1'    => 'Victoria Road',
+        'emc_location'         => 'Cuton Hall Lane, Chelmsford',
+        'emc_address_line1'    => 'Cuton Hall Lane',
         'emc_address_city'     => 'Chelmsford',
-        'emc_address_postcode' => 'CM1 1LW',
+        'emc_address_postcode' => 'CM2 6PB',
         'emc_admin_email'      => 'admin@essexmuslimcentre.org',
         'emc_charity_number'   => '1209815',
 
@@ -238,7 +238,7 @@ function emc_demo_get_theme_mods() {
         'emc_footer_newsletter'         => true,
         'emc_footer_newsletter_heading' => 'Stay in the Loop',
         'emc_footer_newsletter_sub'     => 'Get the latest news, events and announcements delivered to your inbox.',
-        'emc_footer_about_text'         => 'Advancing Islamic faith, education, and community welfare in Chelmsford, Essex since 1980.',
+        'emc_footer_about_text'         => 'Advancing Islamic faith, education, and community welfare from Cuton Hall Lane, Chelmsford.',
         'emc_footer_col2_heading'       => 'Quick Links',
         'emc_footer_col3_heading'       => 'Community',
         'emc_footer_col4_heading'       => 'Contact Us',

@@ -31,11 +31,11 @@ function emc_option( $option, $default = '' ) {
  * @return string HTML or empty string.
  */
 function emc_get_address() {
-    $line1    = emc_option( 'emc_address_line1', '' );
+    $line1    = emc_option( 'emc_address_line1', 'Cuton Hall Lane' );
     $line2    = emc_option( 'emc_address_line2', '' );
     $city     = emc_option( 'emc_address_city',  'Chelmsford' );
-    $postcode = emc_option( 'emc_address_postcode', '' );
-    $location = emc_option( 'emc_location', 'Chelmsford, Essex' );
+    $postcode = emc_option( 'emc_address_postcode', 'CM2 6PB' );
+    $location = emc_option( 'emc_location', 'Cuton Hall Lane, Chelmsford' );
 
     // If specific fields are populated, build multi-line address.
     if ( $line1 || $postcode ) {

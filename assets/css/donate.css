@@ -310,6 +310,43 @@ textarea.form-control {
     gap: 1rem;
 }
 
+.donor-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.payment-choice-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    margin: -0.25rem 0 1.25rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 10px;
+    background: #f8fafc;
+    color: var(--text-muted);
+    font-size: var(--step--2);
+}
+
+.payment-choice-note span,
+.payment-choice-note a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.payment-choice-note a {
+    color: var(--deep-blue);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.payment-choice-note a:hover {
+    color: var(--primary-green);
+}
+
 /* Gift Aid Box */
 .gift-aid-box {
     background: rgba(212,175,55,0.08);
@@ -745,7 +782,8 @@ textarea.form-control {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .form-row {
+    .form-row,
+    .donor-details-grid {
         grid-template-columns: 1fr;
     }
 
@@ -774,6 +812,10 @@ textarea.form-control {
 
     .category-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .donor-details-grid {
+        grid-template-columns: 1fr;
     }
 
     .giving-period-grid {

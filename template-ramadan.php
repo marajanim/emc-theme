@@ -35,6 +35,14 @@ if ( file_exists( $ramadan_js ) ) {
 }
 
 $donate_url = get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donate/' );
+$ramadan_start_date = emc_acf( 'ramadan_start_date', '2027-02-08' );
+if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $ramadan_start_date ) ) {
+    $ramadan_start_date = '2027-02-08';
+}
+
+wp_localize_script( 'emc-page-ramadan', 'emcRamadanConfig', array(
+    'startDate' => $ramadan_start_date,
+) );
 ?>
 
 <!-- ════════════════════════════════════════
@@ -166,6 +174,13 @@ $donate_url = get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donat
                         </p>
                     </div>
 
+                    <div class="form-group">
+                        <label for="ramadan-donor-name"><?php esc_html_e( 'Your Details', 'emc-theme' ); ?></label>
+                        <input type="text" id="ramadan-donor-name" class="form-control" placeholder="<?php esc_attr_e( 'Full name', 'emc-theme' ); ?>" required>
+                        <input type="email" id="ramadan-donor-email" class="form-control" placeholder="<?php esc_attr_e( 'Email address', 'emc-theme' ); ?>" required style="margin-top:0.75rem;">
+                        <textarea id="ramadan-donor-address" class="form-control" rows="2" placeholder="<?php esc_attr_e( 'Address for Gift Aid (optional)', 'emc-theme' ); ?>" style="margin-top:0.75rem;"></textarea>
+                    </div>
+
                     <!-- Schedule Summary -->
                     <div class="schedule-summary" id="rm-summary">
                         <p><?php esc_html_e( 'Your total scheduled giving:', 'emc-theme' ); ?></p>
@@ -256,9 +271,12 @@ $donate_url = get_permalink( get_page_by_path( 'donate' ) ) ?: home_url( '/donat
 
 <script>
 ( function() {
-    // ── Countdown to next Ramadan (approx 1 March 2026) ──────────────────
     function ramadanCountdown() {
-        var target = new Date( '2027-02-18T00:00:00' ); // Ramadan 1448
+        var configuredDate = window.emcRamadanConfig && window.emcRamadanConfig.startDate ? window.emcRamadanConfig.startDate : '2027-02-08';
+        var target = new Date( configuredDate + 'T00:00:00' );
+        if ( isNaN( target.getTime() ) ) {
+            target = new Date( '2027-02-08T00:00:00' );
+        }
         var now    = new Date();
         var diff   = target - now;
         if ( diff < 0 ) return;

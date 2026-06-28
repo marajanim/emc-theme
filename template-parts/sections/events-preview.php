@@ -5,30 +5,56 @@
  */
 
 $events_url = get_permalink( get_page_by_path( 'events' ) ) ?: home_url( '/events/' );
+$events_count = max( 1, absint( emc_option( 'emc_events_count', 2 ) ) );
+$selected_raw = trim( emc_option( 'emc_events_selected', '' ) );
+$selected_ids = array();
 
-// Query upcoming events CPT; fall back to static if none published yet
-$events_query = new WP_Query( array(
+if ( $selected_raw ) {
+    $tokens = array_filter( array_map( 'trim', explode( ',', $selected_raw ) ) );
+    foreach ( $tokens as $token ) {
+        if ( is_numeric( $token ) ) {
+            $selected_ids[] = absint( $token );
+            continue;
+        }
+
+        $event = get_page_by_path( sanitize_title( $token ), OBJECT, 'emc_event' );
+        if ( $event ) {
+            $selected_ids[] = $event->ID;
+        }
+    }
+    $selected_ids = array_values( array_unique( array_filter( $selected_ids ) ) );
+}
+
+$query_args = array(
     'post_type'      => 'emc_event',
-    'posts_per_page' => 2,
+    'posts_per_page' => $events_count,
     'post_status'    => 'publish',
-    'meta_key'       => '_emc_event_date',
-    'orderby'        => 'meta_value',
-    'order'          => 'ASC',
-    'meta_query'     => array(
+);
+
+if ( $selected_ids ) {
+    $query_args['post__in'] = $selected_ids;
+    $query_args['orderby']  = 'post__in';
+} else {
+    $query_args['meta_key']   = '_emc_event_date';
+    $query_args['orderby']    = 'meta_value';
+    $query_args['order']      = 'ASC';
+    $query_args['meta_query'] = array(
         array(
             'key'     => '_emc_event_date',
             'value'   => date( 'Y-m-d' ),
             'compare' => '>=',
             'type'    => 'DATE',
         ),
-    ),
-) );
+    );
+}
+
+$events_query = new WP_Query( $query_args );
 ?>
 <section class="events section-padding" id="events" style="background:var(--white);" aria-labelledby="events-heading">
     <div class="container">
         <div class="section-header left">
-            <span class="subtitle"><?php esc_html_e( 'Upcoming', 'emc-theme' ); ?></span>
-            <h2 id="events-heading"><?php esc_html_e( 'Featured Events', 'emc-theme' ); ?></h2>
+            <span class="subtitle"><?php echo esc_html( emc_option( 'emc_events_subheading', __( 'Upcoming', 'emc-theme' ) ) ); ?></span>
+            <h2 id="events-heading"><?php echo esc_html( emc_option( 'emc_events_heading', __( 'Featured Events', 'emc-theme' ) ) ); ?></h2>
         </div>
 
         <div class="events-grid">
@@ -73,7 +99,7 @@ $events_query = new WP_Query( array(
                 endwhile;
                 wp_reset_postdata();
                 ?>
-            <?php else : ?>
+            <?php elseif ( false ) : ?>
                 <!-- Static fallback cards until events are published -->
                 <div class="event-card scroll-reveal">
                     <div class="event-img" style="background-image:url('<?php echo esc_url( EMC_ASSETS . '/gallery/Community Support Services/New-Muslim-600x338.jpeg' ); ?>');">
@@ -122,7 +148,7 @@ $events_query = new WP_Query( array(
 
         <div class="text-center" style="margin-top:4rem;">
             <a href="<?php echo esc_url( $events_url ); ?>" class="btn btn-primary">
-                <?php esc_html_e( 'View All Events', 'emc-theme' ); ?>
+                <?php echo esc_html( emc_option( 'emc_events_cta_label', __( 'View All Events', 'emc-theme' ) ) ); ?>
             </a>
         </div>
     </div>

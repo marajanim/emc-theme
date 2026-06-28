@@ -11,7 +11,7 @@
             <div class="prayer-strip-label">
                 <i class="fas fa-mosque" aria-hidden="true"></i>
                 <strong><?php esc_html_e( 'Today\'s Prayer Times', 'emc-theme' ); ?></strong>
-                <span class="prayer-strip-location">— <?php echo esc_html( emc_option( 'emc_location', 'Chelmsford, Essex' ) ); ?></span>
+                <span class="prayer-strip-location">— <?php echo esc_html( emc_option( 'emc_location', 'Cuton Hall Lane, Chelmsford' ) ); ?></span>
             </div>
 
             <div class="prayer-strip-times" id="prayer-strip-times">
@@ -26,10 +26,16 @@
                 <?php endforeach; ?>
             </div>
 
-            <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'prayer-times' ) ) ?: home_url( '/prayer-times/' ) ); ?>" class="prayer-strip-link btn btn-outline btn-sm">
-                <?php esc_html_e( 'Full Timetable', 'emc-theme' ); ?>
-                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            </a>
+            <div class="prayer-strip-actions">
+                <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'prayer-times' ) ) ?: home_url( '/prayer-times/' ) ); ?>" class="prayer-strip-link btn btn-outline btn-sm">
+                    <?php esc_html_e( 'Full Timetable', 'emc-theme' ); ?>
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                </a>
+                <a href="<?php echo esc_url( emc_option( 'emc_prayer_pdf_url', home_url( '/wp-content/uploads/2026-prayer-timetable.pdf' ) ) ); ?>" class="prayer-strip-link btn btn-primary btn-sm" download>
+                    <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                    <?php esc_html_e( 'Download 2026 PDF', 'emc-theme' ); ?>
+                </a>
+            </div>
         </div>
     </div>
 </section>

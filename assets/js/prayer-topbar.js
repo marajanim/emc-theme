@@ -45,8 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // ── Hijri date ──────────────────────────────────────────────────
             const hijriEl = document.getElementById('ptb-hijri');
-            if (hijriEl && entry.hijri) {
-                hijriEl.textContent = entry.hijri;
+            if (hijriEl) {
+                try {
+                    const parts = new Intl.DateTimeFormat('en-GB-u-ca-islamic', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                    }).formatToParts(today);
+                    const day = parts.find(part => part.type === 'day')?.value || '';
+                    const month = parts.find(part => part.type === 'month')?.value || '';
+                    const year = parts.find(part => part.type === 'year')?.value || '';
+                    hijriEl.textContent = `${day} ${month} ${year}`.trim();
+                } catch (_) {
+                    hijriEl.textContent = '';
+                }
             }
 
             // ── Jumuah (only relevant on Fridays, but always show the time) ──
@@ -54,11 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (jumuahEl) {
                 const jTime = fmt24(adhan.jumuah);
                 jumuahEl.textContent = jTime !== '--:--' ? jTime : '13:15';
-                // Hide jumu'ah row on non-Fridays
-                const wrap = document.getElementById('ptb-jumuah-wrap');
-                if (wrap && today.getDay() !== 5) {
-                    wrap.style.display = 'none';
-                }
             }
 
             // ── Fill each prayer column ──────────────────────────────────────

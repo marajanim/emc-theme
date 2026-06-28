@@ -30,17 +30,29 @@ add_action( 'admin_menu', function () {
         'emc-stripe-settings',
         'emc_stripe_settings_page'
     );
+
+    add_options_page(
+        'EMC Donations',
+        'EMC Donations',
+        'manage_options',
+        'emc-donations',
+        'emc_donations_page'
+    );
 } );
 
 add_action( 'admin_init', function () {
     register_setting( 'emc_stripe_settings', 'emc_stripe_pub_key',    array( 'sanitize_callback' => 'sanitize_text_field' ) );
     register_setting( 'emc_stripe_settings', 'emc_stripe_secret_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+    register_setting( 'emc_stripe_settings', 'emc_stripe_webhook_secret', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 } );
 
 function emc_stripe_settings_page() {
     $pub    = esc_attr( get_option( 'emc_stripe_pub_key',    '' ) );
     $secret = get_option( 'emc_stripe_secret_key', '' );
+    $webhook_secret = get_option( 'emc_stripe_webhook_secret', '' );
     $masked = $secret ? substr( $secret, 0, 8 ) . str_repeat( '*', max( 0, strlen( $secret ) - 12 ) ) . substr( $secret, -4 ) : '';
+    $webhook_masked = $webhook_secret ? substr( $webhook_secret, 0, 8 ) . str_repeat( '*', max( 0, strlen( $webhook_secret ) - 12 ) ) . substr( $webhook_secret, -4 ) : '';
+    $webhook_url = rest_url( 'emc/v1/stripe-webhook' );
     ?>
     <div class="wrap">
         <h1><span class="dashicons dashicons-shield-alt" style="color:#2aaca0;font-size:28px;margin-right:8px;"></span> EMC Stripe Settings</h1>
@@ -74,11 +86,24 @@ function emc_stripe_settings_page() {
                         <p class="description" style="color:#d63638;">Never share this key publicly.</p>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><label for="emc_stripe_webhook_secret">Webhook Signing Secret</label></th>
+                    <td>
+                        <input type="password" id="emc_stripe_webhook_secret" name="emc_stripe_webhook_secret"
+                               value="<?php echo esc_attr( $webhook_secret ); ?>"
+                               class="regular-text" placeholder="whsec_...">
+                        <?php if ( $webhook_masked ) : ?>
+                        <p class="description">Current webhook secret: <code><?php echo esc_html( $webhook_masked ); ?></code></p>
+                        <?php endif; ?>
+                        <p class="description">Stripe webhook URL: <code><?php echo esc_html( $webhook_url ); ?></code></p>
+                        <p class="description">In Stripe, send at least <code>invoice.payment_succeeded</code> to record recurring Ramadan donations in WordPress.</p>
+                    </td>
+                </tr>
             </table>
             <?php submit_button( 'Save Stripe Keys' ); ?>
         </form>
 
-        <?php if ( get_option('emc_stripe_pub_key') && get_option('emc_stripe_secret_key') ) : ?>
+        <?php if ( emc_stripe_pub_key() && emc_stripe_secret_key() ) : ?>
         <div class="notice notice-success" style="max-width:600px;">
             <p>✅ Stripe keys are configured. The donate page payment flow is active.</p>
         </div>
@@ -91,12 +116,125 @@ function emc_stripe_settings_page() {
     <?php
 }
 
+function emc_donations_page() {
+    $donations = get_option( 'emc_donations_log', array() );
+    if ( ! is_array( $donations ) ) {
+        $donations = array();
+    }
+    $donations = array_reverse( $donations );
+
+    $subscriptions = get_option( 'emc_subscriptions_log', array() );
+    if ( ! is_array( $subscriptions ) ) {
+        $subscriptions = array();
+    }
+    $subscriptions = array_reverse( $subscriptions );
+    ?>
+    <div class="wrap">
+        <h1>EMC Donations</h1>
+        <p>Scheduled subscriptions are shown when setup is confirmed. Payments are shown after Stripe confirms money received.</p>
+
+        <h2>Scheduled Subscriptions</h2>
+        <?php if ( empty( $subscriptions ) ) : ?>
+            <div class="notice notice-info">
+                <p>No subscription setups have been recorded in WordPress yet.</p>
+            </div>
+        <?php else : ?>
+            <table class="widefat striped" style="margin-bottom:24px;">
+                <thead>
+                    <tr>
+                        <th>Setup Date</th>
+                        <th>Amount</th>
+                        <th>Frequency</th>
+                        <th>Start Date</th>
+                        <th>Runs</th>
+                        <th>Fund</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Stripe Subscription</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $subscriptions as $subscription ) : ?>
+                        <tr>
+                            <td><?php echo esc_html( $subscription['date'] ?? '' ); ?></td>
+                            <td>&pound;<?php echo esc_html( $subscription['amount'] ?? '0.00' ); ?></td>
+                            <td><?php echo esc_html( ucfirst( $subscription['frequency'] ?? '' ) ); ?></td>
+                            <td><?php echo esc_html( $subscription['start_date'] ?? '' ); ?></td>
+                            <td><?php echo esc_html( ! empty( $subscription['occurrences'] ) ? $subscription['occurrences'] : 'Ongoing' ); ?></td>
+                            <td><?php echo esc_html( $subscription['fund'] ?? '' ); ?></td>
+                            <td><?php echo esc_html( $subscription['name'] ?? 'Anonymous' ); ?></td>
+                            <td>
+                                <?php if ( ! empty( $subscription['email'] ) ) : ?>
+                                    <a href="mailto:<?php echo esc_attr( $subscription['email'] ); ?>"><?php echo esc_html( $subscription['email'] ); ?></a>
+                                <?php else : ?>
+                                    N/A
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo esc_html( ucfirst( $subscription['status'] ?? '' ) ); ?></td>
+                            <td><code><?php echo esc_html( $subscription['subscription_id'] ?? '' ); ?></code></td>
+                            <td><?php echo esc_html( $subscription['message'] ?? '' ); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+
+        <h2>Payments Received</h2>
+
+        <?php if ( empty( $donations ) ) : ?>
+            <div class="notice notice-info">
+                <p>No donations have been recorded in WordPress yet.</p>
+            </div>
+        <?php else : ?>
+            <table class="widefat striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Fund</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Gift Aid</th>
+                        <th>Stripe Ref</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $donations as $donation ) : ?>
+                        <tr>
+                            <td><?php echo esc_html( $donation['date'] ?? '' ); ?></td>
+                            <td><?php echo esc_html( '£' . ( $donation['amount'] ?? '0.00' ) ); ?></td>
+                            <td><?php echo esc_html( $donation['fund'] ?? '' ); ?></td>
+                            <td><?php echo esc_html( $donation['name'] ?? 'Anonymous' ); ?></td>
+                            <td>
+                                <?php if ( ! empty( $donation['email'] ) ) : ?>
+                                    <a href="mailto:<?php echo esc_attr( $donation['email'] ); ?>"><?php echo esc_html( $donation['email'] ); ?></a>
+                                <?php else : ?>
+                                    N/A
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo nl2br( esc_html( $donation['address'] ?? '' ) ); ?></td>
+                            <td><?php echo ! empty( $donation['gift_aid'] ) ? 'Yes' : 'No'; ?></td>
+                            <td><code><?php echo esc_html( $donation['pi_id'] ?? '' ); ?></code></td>
+                            <td><?php echo esc_html( $donation['message'] ?? '' ); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
 /* ------------------------------------------------------------------
    Admin notice if keys are missing (on donate-related pages)
 ------------------------------------------------------------------ */
 add_action( 'admin_notices', function () {
     if ( ! current_user_can( 'manage_options' ) ) return;
-    if ( get_option( 'emc_stripe_secret_key' ) && get_option( 'emc_stripe_pub_key' ) ) return;
+    if ( emc_stripe_secret_key() && emc_stripe_pub_key() ) return;
     $url = admin_url( 'options-general.php?page=emc-stripe-settings' );
     echo '<div class="notice notice-warning is-dismissible"><p>'
        . '🔑 <strong>EMC Stripe:</strong> Stripe API keys are not configured. '

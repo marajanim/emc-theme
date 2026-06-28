@@ -15,11 +15,6 @@ $show = function( $key, $default = true ) {
 // Hero is always shown
 get_template_part( 'template-parts/sections/hero' );
 
-// Prayer Times strip
-if ( $show( 'prayer_strip' ) ) {
-    get_template_part( 'template-parts/sections/prayer-times' );
-}
-
 // About
 if ( $show( 'about' ) ) {
     get_template_part( 'template-parts/sections/about-intro' );

@@ -82,16 +82,33 @@ if ( file_exists( $donate_js_path ) ) {
                             <label><?php esc_html_e( 'Enter Amount (£)', 'emc-theme' ); ?></label>
                             <div class="input-prefix-wrap"><span class="input-prefix">£</span><input type="number" id="custom-amount-input" class="form-control" placeholder="0.00" min="1"></div>
                         </div>
+                        <div class="donor-details-grid">
+                            <div class="form-group">
+                                <label for="donor-name-one"><?php esc_html_e( 'Full Name *', 'emc-theme' ); ?></label>
+                                <input type="text" id="donor-name-one" class="form-control donor-name" autocomplete="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="donor-email-one"><?php esc_html_e( 'Email Address *', 'emc-theme' ); ?></label>
+                                <input type="email" id="donor-email-one" class="form-control donor-email" autocomplete="email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-address-one"><?php esc_html_e( 'Address', 'emc-theme' ); ?> <span style="font-weight:400;color:var(--text-muted)">(<?php esc_html_e( 'Optional', 'emc-theme' ); ?>)</span></label>
+                            <textarea id="donor-address-one" class="form-control donor-address" rows="2" autocomplete="street-address" placeholder="<?php esc_attr_e( 'Needed if you want Gift Aid recorded accurately.', 'emc-theme' ); ?>"></textarea>
+                        </div>
                         <div class="form-group">
                             <label><?php echo esc_html( emc_acf( 'donate_fund_label', 'Donation Fund' ) ); ?></label>
                             <div class="category-grid">
                                 <button class="cat-btn active" data-cat="General Fund"><i class="fas fa-mosque"></i> <?php echo esc_html( emc_acf( 'donate_fund_general', 'General Fund' ) ); ?></button>
-                                <button class="cat-btn" data-cat="Building Fund"><i class="fas fa-building"></i> <?php echo esc_html( emc_acf( 'donate_fund_building', 'Building Fund' ) ); ?></button>
+                                <button class="cat-btn" data-cat="Building Campaign"><i class="fas fa-building"></i> <?php echo esc_html( emc_acf( 'donate_fund_building', 'Building Campaign' ) ); ?></button>
                                 <button class="cat-btn" data-cat="Education"><i class="fas fa-book-open"></i> <?php echo esc_html( emc_acf( 'donate_fund_education', 'Education' ) ); ?></button>
                                 <button class="cat-btn" data-cat="Zakat"><i class="fas fa-hand-holding-usd"></i> <?php echo esc_html( emc_acf( 'donate_fund_zakat', 'Zakat' ) ); ?></button>
-                                <button class="cat-btn" data-cat="Sadaqah"><i class="fas fa-heart"></i> <?php echo esc_html( emc_acf( 'donate_fund_sadaqah', 'Sadaqah' ) ); ?></button>
-                                <button class="cat-btn" data-cat="Lillah"><i class="fas fa-star-and-crescent"></i> <?php echo esc_html( emc_acf( 'donate_fund_lillah', 'Lillah' ) ); ?></button>
                             </div>
+                        </div>
+                        <div class="payment-choice-note">
+                            <span><i class="fas fa-credit-card"></i> <?php esc_html_e( 'Online card is selected by default.', 'emc-theme' ); ?></span>
+                            <a href="https://paymentrequest.natwestpayit.com/reusable-link/39ee348b-8fe1-41fe-aa6b-9109dc847445" target="_blank" rel="noopener noreferrer"><i class="fas fa-university"></i> <?php esc_html_e( 'Pay by bank', 'emc-theme' ); ?></a>
+                            <a href="#other-ways-to-donate"><i class="fas fa-envelope-open-text"></i> <?php esc_html_e( 'Cheque / In-Mosque', 'emc-theme' ); ?></a>
                         </div>
                         <div class="form-group">
                             <label for="donor-message"><?php esc_html_e( 'Personal Message', 'emc-theme' ); ?> <span style="font-weight:400; color:var(--text-muted)">(<?php esc_html_e( 'Optional', 'emc-theme' ); ?>)</span></label>
@@ -120,11 +137,33 @@ if ( file_exists( $donate_js_path ) ) {
                             <button class="amount-btn">£5</button><button class="amount-btn">£10</button><button class="amount-btn active">£20</button><button class="amount-btn">£50</button>
                             <button class="amount-btn custom-other"><?php esc_html_e( 'Other', 'emc-theme' ); ?></button>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group"><label><?php esc_html_e( 'Frequency', 'emc-theme' ); ?></label><select class="form-control"><option><?php esc_html_e( 'Monthly', 'emc-theme' ); ?></option><option><?php esc_html_e( 'Weekly', 'emc-theme' ); ?></option><option><?php esc_html_e( 'Quarterly', 'emc-theme' ); ?></option><option><?php esc_html_e( 'Annually', 'emc-theme' ); ?></option></select></div>
-                            <div class="form-group"><label><?php esc_html_e( 'Start Date', 'emc-theme' ); ?></label><input type="date" class="form-control"></div>
+                        <div class="custom-amount-wrapper" style="display:none;">
+                            <label><?php esc_html_e( 'Enter Amount (£)', 'emc-theme' ); ?></label>
+                            <div class="input-prefix-wrap"><span class="input-prefix">£</span><input type="number" class="custom-amount-input form-control" placeholder="0.00" min="1"></div>
                         </div>
-                        <div class="form-group"><label><?php esc_html_e( 'Donation Fund', 'emc-theme' ); ?></label><select class="form-control"><option><?php esc_html_e( 'General Fund', 'emc-theme' ); ?></option><option><?php esc_html_e( 'Building Fund', 'emc-theme' ); ?></option><option><?php esc_html_e( 'Education', 'emc-theme' ); ?></option><option><?php esc_html_e( 'Sadaqah', 'emc-theme' ); ?></option></select></div>
+                        <div class="form-row">
+                            <div class="form-group"><label><?php esc_html_e( 'Frequency', 'emc-theme' ); ?></label><select class="form-control regular-frequency"><option value="monthly"><?php esc_html_e( 'Monthly', 'emc-theme' ); ?></option><option value="weekly"><?php esc_html_e( 'Weekly', 'emc-theme' ); ?></option><option value="quarterly"><?php esc_html_e( 'Quarterly', 'emc-theme' ); ?></option><option value="annually"><?php esc_html_e( 'Annually', 'emc-theme' ); ?></option></select></div>
+                            <div class="form-group"><label><?php esc_html_e( 'Start Date', 'emc-theme' ); ?></label><input type="date" class="form-control regular-start-date"></div>
+                        </div>
+                        <div class="form-group"><label><?php esc_html_e( 'Donation Fund', 'emc-theme' ); ?></label><select class="form-control regular-fund"><option value="General Fund"><?php esc_html_e( 'General Fund', 'emc-theme' ); ?></option><option value="Building Campaign"><?php esc_html_e( 'Building Campaign', 'emc-theme' ); ?></option><option value="Education"><?php esc_html_e( 'Education', 'emc-theme' ); ?></option><option value="Zakat"><?php esc_html_e( 'Zakat', 'emc-theme' ); ?></option></select></div>
+                        <div class="donor-details-grid">
+                            <div class="form-group">
+                                <label for="donor-name-regular"><?php esc_html_e( 'Full Name *', 'emc-theme' ); ?></label>
+                                <input type="text" id="donor-name-regular" class="form-control donor-name" autocomplete="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="donor-email-regular"><?php esc_html_e( 'Email Address *', 'emc-theme' ); ?></label>
+                                <input type="email" id="donor-email-regular" class="form-control donor-email" autocomplete="email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-address-regular"><?php esc_html_e( 'Address', 'emc-theme' ); ?> <span style="font-weight:400;color:var(--text-muted)">(<?php esc_html_e( 'Optional', 'emc-theme' ); ?>)</span></label>
+                            <textarea id="donor-address-regular" class="form-control donor-address" rows="2" autocomplete="street-address"></textarea>
+                        </div>
+                        <div class="payment-choice-note">
+                            <span><i class="fas fa-sync-alt"></i> <?php esc_html_e( 'Stripe will set up your recurring donation.', 'emc-theme' ); ?></span>
+                            <a href="https://paymentrequest.natwestpayit.com/reusable-link/39ee348b-8fe1-41fe-aa6b-9109dc847445" target="_blank" rel="noopener noreferrer"><i class="fas fa-university"></i> <?php esc_html_e( 'Pay by bank instead', 'emc-theme' ); ?></a>
+                        </div>
                         <div class="gift-aid-box"><label class="gift-aid-label"><input type="checkbox" id="gift-aid-regular" class="gift-aid-check"><div class="gift-aid-content"><strong><?php echo esc_html( emc_acf( 'donate_giftaid_heading', 'Claim Gift Aid' ) ); ?></strong><p><?php echo esc_html( emc_acf( 'donate_regular_giftaid_text', 'I am a UK taxpayer. EMC can reclaim 25p of tax on every £1 I give at no extra cost to me.' ) ); ?></p></div></label></div>
                         <button class="btn btn-primary donate-submit"><i class="fas fa-sync-alt"></i> <?php echo esc_html( emc_acf( 'donate_regular_btn', 'Set Up Monthly Giving' ) ); ?></button>
                         <?php
@@ -174,6 +213,20 @@ if ( file_exists( $donate_js_path ) ) {
                         <h3><?php echo esc_html( emc_acf( 'donate_zakat_heading', 'Zakat Calculator' ) ); ?></h3>
                         <p class="form-desc"><?php echo esc_html( emc_acf( 'donate_zakat_nisab', 'Nisab (Silver): £452.06 | Zakat rate: 2.5%' ) ); ?></p>
                         <div class="zakat-form">
+                            <div class="donor-details-grid">
+                                <div class="form-group">
+                                    <label for="donor-name-zakat"><?php esc_html_e( 'Full Name *', 'emc-theme' ); ?></label>
+                                    <input type="text" id="donor-name-zakat" class="form-control donor-name" autocomplete="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="donor-email-zakat"><?php esc_html_e( 'Email Address *', 'emc-theme' ); ?></label>
+                                    <input type="email" id="donor-email-zakat" class="form-control donor-email" autocomplete="email" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="donor-address-zakat"><?php esc_html_e( 'Address', 'emc-theme' ); ?> <span style="font-weight:400;color:var(--text-muted)">(<?php esc_html_e( 'Optional', 'emc-theme' ); ?>)</span></label>
+                                <textarea id="donor-address-zakat" class="form-control donor-address" rows="2" autocomplete="street-address"></textarea>
+                            </div>
                             <?php
                             $zakat_fields = array(
                                 array( 'id' => 'z-cash',     'key' => 'donate_zakat_label_cash',   'default' => 'Cash & Bank Savings (£)' ),
@@ -186,6 +239,10 @@ if ( file_exists( $donate_js_path ) ) {
                             <div class="form-group"><label><?php echo esc_html( emc_acf( $zf['key'], $zf['default'] ) ); ?></label><div class="input-prefix-wrap"><span class="input-prefix">£</span><input type="number" class="form-control zakat-input" id="<?php echo esc_attr( $zf['id'] ); ?>" placeholder="0.00"></div></div>
                             <?php endforeach; ?>
                             <div class="zakat-result" id="zakat-result"><div class="zakat-result-inner"><p><?php echo esc_html( emc_acf( 'donate_zakat_result_label', 'Your Estimated Zakat' ) ); ?></p><div class="zakat-amount" id="zakat-amount">£0.00</div><p class="zakat-note" id="zakat-note"><?php esc_html_e( 'Enter your assets above to calculate.', 'emc-theme' ); ?></p></div></div>
+                            <div class="payment-choice-note">
+                                <span><i class="fas fa-calculator"></i> <?php esc_html_e( 'Donate your calculated Zakat online.', 'emc-theme' ); ?></span>
+                                <a href="https://paymentrequest.natwestpayit.com/reusable-link/39ee348b-8fe1-41fe-aa6b-9109dc847445" target="_blank" rel="noopener noreferrer"><i class="fas fa-university"></i> <?php esc_html_e( 'Pay by bank', 'emc-theme' ); ?></a>
+                            </div>
                             <button class="btn btn-primary donate-submit" id="donate-zakat-btn" style="display:none;"><i class="fas fa-hand-holding-usd"></i> <?php echo esc_html( emc_acf( 'donate_zakat_btn', 'Donate My Zakat' ) ); ?></button>
                         </div>
                     </div>
@@ -259,14 +316,18 @@ if ( file_exists( $donate_js_path ) ) {
             <!-- Bank Transfer -->
             <div class="other-way-card glass-card">
                 <div class="other-way-icon"><i class="fas fa-university"></i></div>
-                <h3><?php esc_html_e( 'Bank Transfer', 'emc-theme' ); ?></h3>
-                <p class="other-way-desc"><?php esc_html_e( 'Send a direct payment to our account. Please use your name as the reference.', 'emc-theme' ); ?></p>
+                <h3><?php esc_html_e( 'Pay by Bank', 'emc-theme' ); ?></h3>
+                <p class="other-way-desc"><?php esc_html_e( 'Use our NatWest Payit link for a secure bank payment. Please include your name and fund as the reference.', 'emc-theme' ); ?></p>
                 <div class="bank-details">
                     <div class="bank-row"><span><?php esc_html_e( 'Account Name', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_acf( 'donate_bank_name', 'Essex Muslim Centre' ) ); ?></strong></div>
                     <div class="bank-row"><span><?php esc_html_e( 'Bank', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_acf( 'donate_bank_bank', '[Bank Name]' ) ); ?></strong></div>
                     <div class="bank-row"><span><?php esc_html_e( 'Sort Code', 'emc-theme' ); ?></span><strong class="mono"><?php echo esc_html( emc_acf( 'donate_bank_sort', 'XX-XX-XX' ) ); ?></strong></div>
                     <div class="bank-row"><span><?php esc_html_e( 'Account No.', 'emc-theme' ); ?></span><strong class="mono"><?php echo esc_html( emc_acf( 'donate_bank_account', 'XXXXXXXX' ) ); ?></strong></div>
                 </div>
+                <a href="https://paymentrequest.natwestpayit.com/reusable-link/39ee348b-8fe1-41fe-aa6b-9109dc847445" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-university" aria-hidden="true"></i>
+                    <?php esc_html_e( 'Pay by Your Bank', 'emc-theme' ); ?>
+                </a>
                 <p class="other-way-note"><i class="fas fa-info-circle"></i> <?php esc_html_e( 'Please quote your name as the payment reference so we can identify your gift.', 'emc-theme' ); ?></p>
             </div>
 
@@ -280,7 +341,7 @@ if ( file_exists( $donate_js_path ) ) {
                     <li><span>2</span><?php esc_html_e( 'Complete with your bank details and chosen amount', 'emc-theme' ); ?></li>
                     <li><span>3</span><?php esc_html_e( 'Post or hand in to your bank branch', 'emc-theme' ); ?></li>
                 </ul>
-                <?php $so_url = emc_acf( 'donate_so_pdf', '#' ); ?>
+                <?php $so_url = emc_acf( 'donate_so_pdf', 'https://essexmuslimcentre.org/standing-order-form/' ); ?>
                 <a href="<?php echo esc_url( $so_url ); ?>" class="btn btn-outline" <?php if ( $so_url !== '#' ) echo 'download target="_blank" rel="noopener"'; ?>>
                     <i class="fas fa-download" aria-hidden="true"></i>
                     <?php esc_html_e( 'Download Standing Order Form', 'emc-theme' ); ?>
@@ -295,7 +356,7 @@ if ( file_exists( $donate_js_path ) ) {
                 <p class="other-way-desc"><?php esc_html_e( 'Send a one-off cheque made payable to our charity and post to our address.', 'emc-theme' ); ?></p>
                 <div class="bank-details">
                     <div class="bank-row"><span><?php esc_html_e( 'Payable to', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_acf( 'donate_bank_name', 'Essex Muslim Centre' ) ); ?></strong></div>
-                    <div class="bank-row"><span><?php esc_html_e( 'Post to', 'emc-theme' ); ?></span><strong><?php echo esc_html( emc_option( 'emc_footer_address', "Victoria Road\nChelmsford\nCM1 1LW" ) ); ?></strong></div>
+                    <div class="bank-row"><span><?php esc_html_e( 'Post to', 'emc-theme' ); ?></span><strong><?php echo nl2br( esc_html( emc_option( 'emc_footer_address', "Essex Muslim Centre\nCuton Hall Lane\nChelmsford\nCM2 6PB" ) ) ); ?></strong></div>
                 </div>
                 <p class="other-way-note"><i class="fas fa-info-circle"></i> <?php esc_html_e( 'Please include your name and a note indicating the fund (e.g. General / Building).', 'emc-theme' ); ?></p>
             </div>
